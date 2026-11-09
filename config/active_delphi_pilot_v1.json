@@ -1,0 +1,36 @@
+{
+  "format_version": 1,
+  "freeze_id": "jev-active-delphi-engineering-pilot-2026-09-25-v1",
+  "status": "frozen_before_api_preflight_and_pilot_calls",
+  "purpose": "engineering_only_excluded_from_confirmatory_inference",
+  "dataset_path": "data/active_delphi_pilot_30.jsonl",
+  "dataset_sha256": "984d94bd99f4c512db21c5a274d41b21d80496b41588efb691597732eef8fd13",
+  "question_count": 30,
+  "generator_seed": 20260929,
+  "start_index": 10000,
+  "models": {
+    "openai": "gpt-4.1-mini-2025-04-14",
+    "anthropic": "claude-haiku-4-5-20251001",
+    "mistral": "ministral-14b-2512",
+    "jev": "jev-latest"
+  },
+  "temperature": 0.7,
+  "max_output_tokens": 2048,
+  "retrieval_attempts_per_stage": 2,
+  "pricing": {
+    "gpt-4.1-mini-2025-04-14": [0.4, 1.6],
+    "claude-haiku-4-5-20251001": [1.0, 5.0],
+    "ministral-14b-2512": [0.2, 0.2],
+    "jev-latest": [0.042, 0.0]
+  },
+  "implementation_files": [
+    "active_delphi/models.py",
+    "active_delphi/generate.py",
+    "active_delphi/jev.py",
+    "active_delphi/store.py",
+    "run_active_delphi_pilot.py",
+    "analyze_active_delphi_pilot.py",
+    "docs/ACTIVE_DELPHI_PILOT_PROTOCOL.md"
+  ],
+  "implementation_sha256": "aae31706adc72b8e99ccca3ca36ee9eb0056dac950f85bff1977d4a089a71d7f"
+}

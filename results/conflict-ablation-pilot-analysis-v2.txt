@@ -1,0 +1,19 @@
+CONFLICT ABLATION PILOT V2
+Freeze: jev-conflict-scope-engineering-pilot-2026-09-25-v2
+Excluded from confirmation.
+
+Complete: 30/30
+hash_tie: 32/90
+keyword_rule: 18/90
+openai: 90/90
+jev: 90/90
+
+ENGINEERING GATES
+PASS: complete_at_least_29
+PASS: openai_at_least_81_of_90
+PASS: jev_at_least_81_of_90
+PASS: positions_exactly_30_each
+
+OVERALL: PASS
+Failed calls: 0
+Recorded spend: $0.0318

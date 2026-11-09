@@ -1,0 +1,21 @@
+ACTIVE DELPHI CLASSIFIER PILOT - ENGINEERING ANALYSIS
+Freeze: jev-active-delphi-engineering-pilot-2026-09-25-v1
+Pilot data are excluded from later confirmatory inference.
+
+Terminal outcomes: 30/30
+Complete three-link paths: 30/30 (100.00%)
+Correct final answers: 30/30 (100.00%)
+Accepted evidence actions: 90
+Accepted citation validity: 90/90 (100.00%)
+Accepted true support links (diagnostic): 90/90
+Recorded spend: $0.1381
+Failed calls: 0
+
+FROZEN ENGINEERING GATES
+PASS: terminal_outcomes_at_least_29
+PASS: complete_paths_at_least_27
+PASS: correct_answers_at_least_27
+FAIL: ownership_max_five_per_position
+PASS: accepted_citation_validity_at_least_95pct
+
+OVERALL: FAIL

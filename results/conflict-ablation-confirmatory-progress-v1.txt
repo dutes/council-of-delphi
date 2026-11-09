@@ -1,0 +1,6 @@
+CONFLICTING-EVIDENCE ABLATION - OPERATIONS ONLY
+Freeze: jev-conflict-scope-confirmatory-2026-09-25-v1
+Complete: 300/300
+Recorded spend: $0.3207
+Failed calls: 1
+No interim accuracy displayed.

@@ -1,0 +1,38 @@
+{
+  "format_version": 1,
+  "freeze_id": "jev-evidence-partitioned-2026-09-24-v1",
+  "status": "preregistered_before_api_preflight_and_scored_calls",
+  "dataset_path": "data/evidence_partitioned_300.jsonl",
+  "dataset_sha256": "be6ca71f1b41c85507f5bd035bd10e5a50abece1c39abff9ec208c7db74c7070",
+  "question_count": 300,
+  "generator_seed": 20260925,
+  "models": {
+    "openai": "gpt-4.1-mini-2025-04-14",
+    "anthropic": "claude-haiku-4-5-20251001",
+    "mistral": "ministral-14b-2512",
+    "jev": "jev-latest"
+  },
+  "temperature": 0.7,
+  "max_output_tokens": 2048,
+  "max_attempts_per_stage": 2,
+  "maximum_missing_fraction": 0.02,
+  "vote_seed": 20260926,
+  "analysis_seed": 20260927,
+  "bootstrap_draws": 10000,
+  "pricing": {
+    "gpt-4.1-mini-2025-04-14": [0.4, 1.6],
+    "claude-haiku-4-5-20251001": [1.0, 5.0],
+    "ministral-14b-2512": [0.2, 0.2],
+    "jev-latest": [0.042, 0.0]
+  },
+  "implementation_files": [
+    "evidence_study/models.py",
+    "evidence_study/generate.py",
+    "evidence_study/jev.py",
+    "evidence_study/store.py",
+    "run_evidence_study.py",
+    "analyze_evidence_study.py",
+    "docs/EVIDENCE_PROTOCOL.md"
+  ],
+  "implementation_sha256": "d3d720cec9fa18a09339239bcd896e8ad577082ee10487604040c56b26b4f764"
+}

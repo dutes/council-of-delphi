@@ -1,0 +1,26 @@
+{
+  "format_version": 2,
+  "freeze_id": "jev-conflict-scope-engineering-pilot-2026-09-25-v2",
+  "status": "frozen_before_api_calls",
+  "purpose": "engineering_only_excluded_from_confirmation",
+  "dataset_path": "data/conflict_ablation_pilot_v2_30.jsonl",
+  "dataset_sha256": "8960e7063b47584add695a91d7edca9955267c8bb6fec21d1728fc8d71b7e6ee",
+  "question_count": 30,
+  "models": {"openai": "gpt-4.1-mini-2025-04-14", "jev": "jev-latest"},
+  "max_output_tokens": 512,
+  "max_attempts_per_decision": 2,
+  "concurrency": 10,
+  "tie_seed": 20261021,
+  "pricing": {"gpt-4.1-mini-2025-04-14": [0.4,1.6], "jev-latest": [0.042,0.0]},
+  "implementation_files": [
+    "conflict_ablation/models.py",
+    "conflict_ablation/generate_v2.py",
+    "conflict_ablation/arbiters.py",
+    "conflict_ablation/store.py",
+    "run_conflict_ablation.py",
+    "run_conflict_ablation_pilot_v2.py",
+    "analyze_conflict_ablation_pilot_v2.py",
+    "docs/CONFLICT_ABLATION_PILOT_V2_PROTOCOL.md"
+  ],
+  "implementation_sha256": "6d70204c08ffba46c21f65c14c9634d4ee948366501a10eddb3d050f2b112961"
+}

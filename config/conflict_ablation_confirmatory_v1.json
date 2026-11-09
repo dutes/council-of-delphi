@@ -1,0 +1,29 @@
+{
+  "format_version": 1,
+  "freeze_id": "jev-conflict-scope-confirmatory-2026-09-25-v1",
+  "status": "preregistered_before_confirmatory_api_calls",
+  "dataset_path": "data/conflict_ablation_confirmatory_300.jsonl",
+  "dataset_sha256": "ab456ff83a4c7a1465b71859e4ed4142cd8a1b925fb74eb63fca04cb17dc0da4",
+  "question_count": 300,
+  "models": {"openai": "gpt-4.1-mini-2025-04-14", "jev": "jev-latest"},
+  "max_output_tokens": 512,
+  "max_attempts_per_decision": 2,
+  "maximum_missing_fraction": 0.02,
+  "concurrency": 10,
+  "tie_seed": 20261031,
+  "analysis_seed": 20261101,
+  "bootstrap_draws": 10000,
+  "equivalence_margin": 0.03,
+  "pricing": {"gpt-4.1-mini-2025-04-14": [0.4,1.6], "jev-latest": [0.042,0.0]},
+  "implementation_files": [
+    "conflict_ablation/models.py",
+    "conflict_ablation/generate_v2.py",
+    "conflict_ablation/arbiters.py",
+    "conflict_ablation/store.py",
+    "run_conflict_ablation.py",
+    "run_conflict_ablation_confirmatory.py",
+    "analyze_conflict_ablation_confirmatory.py",
+    "docs/CONFLICT_ABLATION_CONFIRMATORY_PROTOCOL.md"
+  ],
+  "implementation_sha256": "905d3e3008b5cd21a2d87e359c8d6362a2ac9ee98291c493ec0c218e776017a7"
+}

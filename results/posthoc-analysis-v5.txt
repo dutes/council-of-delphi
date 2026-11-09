@@ -1,0 +1,11 @@
+JEV CROWD-COUNCIL STUDY - POST-HOC COMPARISON (NOT PRE-REGISTERED)
+==================================================================
+Freeze: jev-crowd-council-delphi-2026-09-24-v5
+Questions compared: 494/500
+
+JEV alone: 87.25%
+Full JEV-controlled Delphi: 80.77%
+JEV alone minus full Delphi: +6.48 pp
+Bootstrap 95% interval: [+3.44, +9.51] pp
+JEV alone right, Delphi wrong: 45
+Delphi right, JEV alone wrong: 13

@@ -1,0 +1,6 @@
+EVIDENCE STUDY - OPERATIONS ONLY
+Freeze: jev-evidence-partitioned-2026-09-24-v1
+Complete: 300/300
+Recorded spend: $0.6352
+Failed calls: 0
+No interim accuracy or auditability results displayed.

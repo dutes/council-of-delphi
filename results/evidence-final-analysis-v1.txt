@@ -1,0 +1,29 @@
+EVIDENCE-PARTITIONED JEV STUDY - FINAL LOCKED ANALYSIS
+===========================================================
+Freeze: jev-evidence-partitioned-2026-09-24-v1
+Complete: 300/300
+Primary evaluable: YES
+Failed calls: 0
+
+ANSWER ACCURACY
+JEV question-only: 26.00%
+Evidence-limited specialist vote: 25.67%
+JEV report synthesis: 12.67%
+JEV all raw evidence: 100.00%
+
+PAIRED EFFECTS
+PRIMARY reports minus question-only: -13.33 pp [-19.33, -7.33]
+Reports minus specialist vote: -13.00 pp [-18.33, -8.00]
+Raw evidence minus reports: +87.33 pp [+83.33, +91.00]
+
+AUDITABILITY
+All support links available in reports: 0/300 (0.00%)
+Specialist own-support recall: 44.11%
+Specialist citation validity: 100.00%
+JEV report complete-proof rate: 0.00%
+JEV raw complete-proof rate: 1.00%
+JEV report evidence precision: 100.00%
+JEV raw evidence precision: 100.00%
+Report citations all reference dataset IDs: 300/300
+
+Recorded spend: $0.6352

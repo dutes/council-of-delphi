@@ -1,0 +1,37 @@
+JEV CROWD-COUNCIL STUDY — FINAL LOCKED ANALYSIS
+====================================================
+Freeze: jev-crowd-council-delphi-2026-09-24-v5
+Complete: 494/500
+Primary evaluable: YES
+Failed calls: 41
+
+CONDITION ACCURACY
+Three first answers, cross-model vote: 64.78%
+Three provider crowds, cross-model vote: 67.61%
+JEV alone: 87.25%
+JEV selection-only: 73.48%
+Post-controller positions, simple vote: 76.72%
+Full JEV-controlled Delphi: 80.77%
+
+PRIMARY RESULT
+Full Delphi minus crowd majority: +13.16 pp
+Bootstrap 95% interval: [+9.72, +16.80] pp
+Helpful transitions: 76
+Harmful transitions: 11
+
+SECONDARY DECOMPOSITION
+Own-crowds/cross-model vote minus first-answer vote: +2.83 pp [+1.21, +4.66]
+JEV selection-only minus crowd majority: +5.87 pp [+3.04, +8.91]
+JEV requested reconsideration: 220/494
+Disagreement questions: 222
+Correct provider position available: 382/494
+Any correct raw sample available: 409/494
+JEV selection accuracy when correct position available: 95.03%
+
+PROVIDER FIRST-SAMPLE -> OWN-CROWD ACCURACY
+Openai: 62.55% -> 63.56% (+1.01 pp)
+Anthropic: 65.59% -> 65.99% (+0.40 pp)
+Mistral: 60.12% -> 60.53% (+0.40 pp)
+
+Recorded spend: $5.6511
+No result from a quarantined earlier experiment is pooled here.

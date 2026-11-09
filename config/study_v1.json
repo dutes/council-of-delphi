@@ -1,0 +1,62 @@
+{
+  "format_version": 2,
+  "freeze_id": "jev-crowd-council-delphi-2026-09-24-v5",
+  "status": "restarted_after_documented_operational_pilot_before_outcome_analysis",
+  "prestudy_amendments": [
+    {
+      "date": "2026-09-24",
+      "change": "Replaced gemini-2.5-flash with ministral-14b-2512",
+      "reason": "Gemini was discoverable but not callable by either tested Google project; Mistral Large 3 was then considered but blocked by the available subscription tier; Ministral 3 14B was the strongest available general-purpose Mistral model whose account metadata explicitly reported reasoning=false",
+      "data_status": "Only a synthetic unscored preflight was attempted; no frozen-dataset question or scored result existed before the change",
+      "reporting_requirement": "Disclose the replacement in the final paper's methods and limitations"
+    }
+  ],
+  "operational_amendments": [
+    {
+      "date": "2026-09-24",
+      "change": "Raised max_output_tokens from 512 to 2048 and restarted in a new database",
+      "trigger": "The aborted v4 start produced 18 structured-JSON truncation failures among 68 calls across six touched questions",
+      "outcome_blinding": "No accuracy or aggregate outcome was calculated or inspected; the change was based only on invalid JSON ending at the output ceiling",
+      "disposition": "The complete v4 database was quarantined and is excluded from all study analysis",
+      "reporting_requirement": "Disclose this operational pilot and post-start amendment in the final paper's methods and limitations"
+    }
+  ],
+  "dataset_path": "data/arbiter_500.jsonl",
+  "dataset_sha256": "ff44e900b7a9e44e626dbfca6a9f3c9209cfe15fb610eb130317b36cfd7564f4",
+  "question_count": 500,
+  "models": {
+    "openai": "gpt-4.1-mini-2025-04-14",
+    "anthropic": "claude-haiku-4-5-20251001",
+    "mistral": "ministral-14b-2512",
+    "jev": "jev-latest"
+  },
+  "crowd_size": 3,
+  "temperature": 0.7,
+  "max_output_tokens": 2048,
+  "crowd_seed": 20260923,
+  "arbitration_seed": 20260924,
+  "tie_seed": 20260925,
+  "analysis_seed": 20260926,
+  "bootstrap_draws": 10000,
+  "maximum_missing_fraction": 0.02,
+  "max_attempts_per_stage": 2,
+  "max_recorded_cost_usd": 15,
+  "pricing": {
+    "gpt-4.1-mini-2025-04-14": [0.4, 1.6],
+    "claude-haiku-4-5-20251001": [1.0, 5.0],
+    "ministral-14b-2512": [0.2, 0.2],
+    "jev-latest": [0.042, 0.0]
+  },
+  "implementation_files": [
+    "arbiter_study/models.py",
+    "arbiter_study/core.py",
+    "arbiter_study/config.py",
+    "arbiter_study/providers.py",
+    "arbiter_study/jev.py",
+    "arbiter_study/store.py",
+    "run_study.py",
+    "analyze_study.py",
+    "docs/PROTOCOL.md"
+  ],
+  "implementation_sha256": "8543d2250a3d837d72669de9517d2bc6889332002101c983ccf4eed9848a8f9b"
+}

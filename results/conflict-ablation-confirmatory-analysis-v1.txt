@@ -1,0 +1,26 @@
+CONFLICTING-EVIDENCE ARBITER CONFIRMATION - LOCKED ANALYSIS
+=================================================================
+Freeze: jev-conflict-scope-confirmatory-2026-09-25-v1
+Complete: 300/300
+Evaluable: YES
+
+FULL THREE-STAGE PATH ACCURACY
+hash_tie: 2.00%
+keyword_rule: 0.00%
+openai: 100.00%
+jev: 100.00%
+
+STAGE SELECTION ACCURACY
+hash_tie: 293/900 (32.56%)
+keyword_rule: 180/900 (20.00%)
+openai: 900/900 (100.00%)
+jev: 900/900 (100.00%)
+
+PAIRED QUESTION-LEVEL EFFECTS
+JEV minus keyword rule: +100.00 pp [+100.00, +100.00]
+JEV minus OpenAI classifier: +0.00 pp [+0.00, +0.00]
+JEV minus hash tie: +98.00 pp [+96.33, +99.33]
+JEV/OpenAI descriptive ±3 pp equivalence criterion: MET
+
+Failed calls: 1
+Recorded spend: $0.3207

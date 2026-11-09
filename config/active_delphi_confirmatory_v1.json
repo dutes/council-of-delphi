@@ -1,0 +1,45 @@
+{
+  "format_version": 1,
+  "freeze_id": "jev-active-delphi-confirmatory-2026-09-25-v1",
+  "status": "preregistered_before_api_preflight_and_scored_calls",
+  "dataset_path": "data/active_delphi_confirmatory_300.jsonl",
+  "dataset_sha256": "169ecce86d3273d404d1609de2f127a71ce76cbc61258f25aecdbf9d128b2d01",
+  "question_count": 300,
+  "generator_seed": 20261001,
+  "models": {
+    "openai": "gpt-4.1-mini-2025-04-14",
+    "anthropic": "claude-haiku-4-5-20251001",
+    "mistral": "ministral-14b-2512",
+    "jev": "jev-latest"
+  },
+  "temperature": 0.7,
+  "max_output_tokens": 2048,
+  "max_attempts_per_stage": 2,
+  "retrieval_attempts_per_stage": 2,
+  "maximum_missing_fraction": 0.02,
+  "concurrency": 3,
+  "vote_seed": 20261002,
+  "analysis_seed": 20261003,
+  "bootstrap_draws": 10000,
+  "pricing": {
+    "gpt-4.1-mini-2025-04-14": [0.4, 1.6],
+    "claude-haiku-4-5-20251001": [1.0, 5.0],
+    "ministral-14b-2512": [0.2, 0.2],
+    "jev-latest": [0.042, 0.0]
+  },
+  "implementation_files": [
+    "active_delphi/models.py",
+    "active_delphi/generate.py",
+    "active_delphi/jev.py",
+    "active_delphi/store.py",
+    "evidence_study/models.py",
+    "evidence_study/jev.py",
+    "evidence_study/store.py",
+    "run_active_delphi_pilot.py",
+    "run_evidence_study.py",
+    "run_active_delphi_confirmatory.py",
+    "analyze_active_delphi_confirmatory.py",
+    "docs/ACTIVE_DELPHI_CONFIRMATORY_PROTOCOL.md"
+  ],
+  "implementation_sha256": "09f03388f739a0979a924bdb933e36bf91de07da378e2df55e679e3d4ccbd3a6"
+}

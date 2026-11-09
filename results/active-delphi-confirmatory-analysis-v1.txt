@@ -1,0 +1,25 @@
+ACTIVE DELPHI CONFIRMATORY STUDY - LOCKED ANALYSIS
+=======================================================
+Freeze: jev-active-delphi-confirmatory-2026-09-25-v1
+Complete paired questions: 300/300
+Primary evaluable: YES
+
+ANSWER ACCURACY
+JEV question-only: 26.33%
+Specialist vote: 20.67%
+One-round JEV synthesis: 17.33%
+Active JEV-classified retrieval: 100.00%
+JEV all raw evidence: 100.00%
+
+PAIRED EFFECTS
+PRIMARY active minus one-round reports: +82.67 pp [+78.33, +86.67]
+Active minus specialist vote: +79.33 pp [+74.67, +83.67]
+Active minus question-only: +73.67 pp [+68.67, +78.67]
+Raw evidence minus active: +0.00 pp [+0.00, +0.00]
+
+ACTIVE-PROCESS AUDIT
+Complete three-link path: 300/300 (100.00%)
+Accepted path exactly equals true support: 300/300 (100.00%)
+
+Failed calls: 0
+Recorded spend: $2.0328

@@ -1,0 +1,6 @@
+CONFLICTING-EVIDENCE ABLATION - OPERATIONS ONLY
+Freeze: jev-conflict-scope-engineering-pilot-2026-09-25-v2
+Complete: 30/30
+Recorded spend: $0.0318
+Failed calls: 0
+No interim accuracy displayed.

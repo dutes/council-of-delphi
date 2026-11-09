@@ -1,0 +1,19 @@
+{
+  "version": "jev-arbiter-fresh-mc-500-v1",
+  "seed": 20260924,
+  "question_count": 500,
+  "sha256": "ff44e900b7a9e44e626dbfca6a9f3c9209cfe15fb610eb130317b36cfd7564f4",
+  "source_counts": {
+    "mmlu_pro": 400,
+    "arc_challenge": 100
+  },
+  "source_revisions": {
+    "mmlu_pro": "b189ec765aa7ed75c8acfea42df31fdae71f97be",
+    "arc_challenge": "210d026faf9955653af8916fad021475a3f00453"
+  },
+  "quarantine_exclusions": {
+    "source_rows": 2600,
+    "question_texts": 2640
+  },
+  "overlap_with_quarantine": 0
+}

@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.pytest-tmp/
+.venv/
+venv/
+.env
+*.sqlite
+*.sqlite3
+*.db
+dist/
+build/
+*.egg-info/
+data/source-parquet-cache/
+
+# Keep the scored study databases so the analysis can be re-run without API calls
+!results/*.sqlite3
+
+# Quarantined earlier experiments: publish their notes, not their data
+archived/**
+!archived/**/
+!archived/**/*.md
+
+# Local working folders
+.codex-remote-attachments/
+tmp/
+output/
