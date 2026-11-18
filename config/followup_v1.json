@@ -1,0 +1,63 @@
+{
+  "format_version": 1,
+  "freeze_id": "delphi-followup-matched-council-v1",
+  "status": "draft",
+  "protocol": "docs/FOLLOWUP_PROTOCOL.md",
+  "dataset_path": "data/followup_500.jsonl",
+  "dataset_sha256": null,
+  "question_count": 500,
+  "calibration_path": "data/followup_calibration_60.jsonl",
+  "calibration_sha256": null,
+  "jev_model": "jev-latest",
+  "arms": {
+    "small": {
+      "openai": "gpt-4.1-mini-2025-04-14",
+      "anthropic": "claude-haiku-4-5-20251001",
+      "mistral": "ministral-14b-2512"
+    },
+    "matched": {
+      "openai": null,
+      "anthropic": null,
+      "mistral": null
+    }
+  },
+  "candidates": {
+    "openai": [],
+    "anthropic": [],
+    "mistral": []
+  },
+  "match_tolerance_pp": 3,
+  "crowd_size": 3,
+  "temperature": 0.7,
+  "max_output_tokens": 2048,
+  "crowd_seed": 20261123,
+  "arbitration_seed": 20261124,
+  "tie_seed": 20261125,
+  "analysis_seed": 20261126,
+  "bootstrap_draws": 10000,
+  "maximum_missing_fraction": 0.02,
+  "max_attempts_per_stage": 2,
+  "max_recorded_cost_usd": null,
+  "pricing": {
+    "gpt-4.1-mini-2025-04-14": [0.4, 1.6],
+    "claude-haiku-4-5-20251001": [1.0, 5.0],
+    "ministral-14b-2512": [0.2, 0.2],
+    "jev-latest": [0.042, 0.0]
+  },
+  "implementation_files": [
+    "arbiter_study/models.py",
+    "arbiter_study/core.py",
+    "arbiter_study/config.py",
+    "arbiter_study/providers.py",
+    "arbiter_study/jev.py",
+    "followup_study/__init__.py",
+    "followup_study/spec.py",
+    "followup_study/store.py",
+    "followup_study/seat.py",
+    "followup_study/pipeline.py",
+    "run_followup.py",
+    "analyze_followup.py",
+    "docs/FOLLOWUP_PROTOCOL.md"
+  ],
+  "implementation_sha256": null
+}

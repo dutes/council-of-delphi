@@ -72,12 +72,17 @@ chosen by the matching rule below. Nothing else changes.
 
 ### G. Delphi with JEV as a candidate
 
-The same as F-matched, except JEV's answer from condition D is added to the
-anonymised candidate list before JEV's assessment. It's presented the same way
-as any other candidate, with a vote count of one and no rationale, and it isn't
-labelled as JEV's. JEV can stop, ask for one reconsideration round, and select
-the final answer, exactly as in F-matched. Council members see it in the
-reconsideration round like any other candidate.
+The same as F-matched, using the same council answers, except JEV's answer
+from condition D is added to the anonymised candidate list before JEV's
+assessment. It's presented like a council position, with a vote count of one,
+no rationale and no stated confidence, and nothing labels it as JEV's. If it
+matches a council answer, it joins that candidate's support, because
+candidates are grouped by answer.
+
+JEV can stop, ask for one reconsideration round, and select the final answer,
+exactly as in F-matched. Council members see JEV's candidate in the
+reconsideration round like any other. It stays in the list for the final
+selection, so reconsideration can't remove it; only JEV can pass it over.
 
 ### C-matched. Strength-matched council majority
 
@@ -99,8 +104,9 @@ measured accuracy rather than on model names.
    fixed before calibration *[to fix at freeze: list of dated model IDs]*.
 4. **Measure each candidate's first-answer accuracy** (one sample, the first
    study's prompt and temperature) on the calibration set.
-5. **Selection rule.** For each provider, pick the cheapest candidate whose
-   accuracy is within 3 points of JEV alone. If none qualifies, pick that
+5. **Selection rule.** For each provider, pick the cheapest candidate, by
+   measured cost per question on the calibration set, whose accuracy is
+   within 3 points of JEV alone. If none qualifies, pick that
    provider's most accurate candidate and record the gap.
 6. Record the chosen models, their calibration accuracy and the gaps in the
    freeze record before any scored call.
@@ -134,8 +140,7 @@ Also reported:
   accuracy when one does;
 - how often JEV asks for reconsideration, and how often reconsideration moves
   a correct council to a wrong answer;
-- for condition G, how often JEV's own candidate is selected, and how often it
-  is dropped after reconsideration;
+- for condition G, how often the final answer is JEV's own answer;
 - cost, failures and missingness per condition.
 
 ## Analysis

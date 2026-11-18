@@ -19,4 +19,4 @@ testpaths = ["tests"]
 addopts = "--basetemp=.pytest-tmp -p no:cacheprovider"
 
 [tool.hatch.build.targets.wheel]
-packages = ["arbiter_study"]
+packages = ["arbiter_study", "followup_study"]
