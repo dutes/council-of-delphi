@@ -85,7 +85,7 @@ The protocols for these are in `docs/` (`EVIDENCE_PROTOCOL.md`, `ACTIVE_DELPHI_*
 
 I'd rather state these plainly than have a reader find them:
 
-- **The council and the judge aren't equally capable.** The council is three small, fast models. Part of the "judge beats council" result may simply be that a stronger model beats weaker ones. A council of frontier models could behave differently.
+- **The council and the judge aren't equally capable.** The council is three small, fast models. TypeSafe doesn't publish which model powers JEV, and I've asked. Part of the "judge beats council" result may simply be that a stronger model beats weaker ones. A council of frontier models could behave differently, and that's what the [follow-up study](docs/FOLLOWUP_PROTOCOL.md) tests.
 - **One model slate, one prompt, one question mix.** The results apply to this setup. They don't show that councils never help.
 - **Public benchmarks.** MMLU-Pro and ARC questions may appear in the models' training data.
 - **Model substitution before the run.** Google's `gemini-2.5-flash` was the planned third model, but its API rejected new users during preflight. Mistral Large 3 was blocked by my subscription tier, so I used Ministral 14B, the strongest available Mistral model without reasoning mode. No scored data was produced before the swap.
@@ -122,6 +122,10 @@ The first command reproduces the locked, pre-registered report. It refuses to ru
 - [ARC-Challenge](https://allenai.org/data/arc) (Allen Institute for AI), CC BY-SA 4.0
 
 Health and law categories were excluded.
+
+## Licence
+
+The code and documents are MIT licensed. The benchmark questions keep their original licences; see [`LICENSE`](LICENSE).
 
 ## Independence
 
