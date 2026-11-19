@@ -136,6 +136,12 @@ preflight check and is dropped before calibration. Models with no reasoning
 mode, including the whole original small council, are called exactly as in the
 first study.
 
+Two of the Anthropic candidates, `claude-sonnet-5-5` and `claude-opus-5-5`,
+no longer accept a temperature setting at all. If either is chosen, it's
+sampled at Anthropic's fixed default instead of the protocol's 0.7, and the
+freeze record says so. Every other model, including the whole small council,
+uses 0.7 as before.
+
 This is the first protocol's own definition ("no enabled hidden reasoning
 mode"). The first study went further and also excluded models that could
 reason, based on their listing; the follow-up doesn't.

@@ -231,3 +231,12 @@ async def test_a_mistral_reply_with_thinking_is_rejected(monkeypatch):
     q = Question(id="q", question="?", choices=CHOICES, correct_label="A")
     with pytest.raises(providers.ProviderError, match="reasoning"):
         await providers.ask_mistral(q, config, member_id="m", stage="initial", sample_index=1)
+
+
+def test_temperature_is_left_out_only_for_models_that_reject_it():
+    from followup_study.providers import temperature
+    spec, _ = load_spec(ROOT / "config/followup_v1.json")
+    config = arm_config(spec, "small")
+    assert temperature(config, "claude-opus-5-5") == {}
+    assert temperature(config, "claude-haiku-4-5-20251001") == {"temperature": 0.7}
+    assert temperature(config, "gpt-5.4-2026-03-05") == {"temperature": 0.7}

@@ -26,6 +26,16 @@ from arbiter_study.models import ModelAnswer, Question
 from arbiter_study.providers import ProviderError, normalise, output_schema, post, prompts
 
 
+# Models whose API no longer accepts a temperature ("temperature is deprecated for this
+# model"). They're sampled at the provider's fixed default instead of the protocol's 0.7,
+# which the freeze record discloses. Every other model gets the protocol temperature.
+FIXED_TEMPERATURE = frozenset({"claude-sonnet-5-5", "claude-opus-5-5"})
+
+
+def temperature(config: StudyConfig, model: str) -> dict[str, Any]:
+    return {} if model in FIXED_TEMPERATURE else {"temperature": config.temperature}
+
+
 def reasoning_off(provider: str, model: str) -> dict[str, Any]:
     """The request fields that switch reasoning off for models that have it."""
     if provider == "openai" and model.startswith("gpt-5"):
@@ -43,7 +53,7 @@ async def ask_openai(question: Question, config: StudyConfig, *, member_id: str,
         config, "openai", "https://api.openai.com/v1/chat/completions",
         headers={"Authorization": f"Bearer {config.key('openai')}", "Content-Type": "application/json"},
         payload={
-            "model": model, "temperature": config.temperature,
+            "model": model, **temperature(config, model),
             "max_completion_tokens": config.max_output_tokens,
             "response_format": {"type": "json_schema", "json_schema": {
                 "name": f"{stage}_answer", "strict": True, "schema": output_schema(question)}},
@@ -71,7 +81,7 @@ async def ask_anthropic(question: Question, config: StudyConfig, *, member_id: s
         headers={"x-api-key": config.key("anthropic"), "anthropic-version": "2023-06-01",
                  "Content-Type": "application/json"},
         payload={
-            "model": model, "temperature": config.temperature,
+            "model": model, **temperature(config, model),
             "max_tokens": config.max_output_tokens, "system": system,
             "messages": [{"role": "user", "content": user}],
             "output_config": {"format": {"type": "json_schema", "schema": output_schema(question)}},
@@ -96,7 +106,7 @@ async def ask_mistral(question: Question, config: StudyConfig, *, member_id: str
         config, "mistral", "https://api.mistral.ai/v1/chat/completions",
         headers={"Authorization": f"Bearer {config.key('mistral')}", "Content-Type": "application/json"},
         payload={
-            "model": model, "temperature": config.temperature,
+            "model": model, **temperature(config, model),
             "max_tokens": config.max_output_tokens,
             "response_format": {"type": "json_schema", "json_schema": {
                 "name": f"{stage}_answer", "schema": output_schema(question), "strict": True}},
