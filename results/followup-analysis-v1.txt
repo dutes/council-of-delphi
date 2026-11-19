@@ -1,0 +1,47 @@
+FOLLOW-UP STUDY - LOCKED ANALYSIS
+========================================
+Freeze: delphi-followup-matched-council-v1
+Questions: 500
+Primary evaluable: YES (0 questions missing)
+Failed calls: 17
+
+ACCURACY
+D  JEV alone: 86.20% (n=500)
+F  Delphi, original small council: 81.96% (n=499)
+F  Delphi, strength-matched council: 89.80% (n=500)
+G  Delphi, matched council plus JEV as a candidate: 91.00% (n=500)
+C  Matched council, simple majority: 82.80% (n=500)
+
+PRIMARY (pre-registered)
+JEV alone minus matched-council Delphi: -3.60 pp  [95% CI -6.20, -1.00]
+    first right, second wrong: 13 | second right, first wrong: 31 | pairs: 500 | dropped: 0
+
+KEY SECONDARY
+JEV alone minus small-council Delphi (replication): +4.21 pp  [95% CI +1.20, +7.21]
+    first right, second wrong: 40 | second right, first wrong: 19 | pairs: 499 | dropped: 1
+JEV-as-candidate Delphi minus JEV alone: +4.80 pp  [95% CI +2.40, +7.40]
+    first right, second wrong: 32 | second right, first wrong: 8 | pairs: 500 | dropped: 0
+Matched-council Delphi minus matched majority: +7.00 pp  [95% CI +4.40, +9.80]
+    first right, second wrong: 42 | second right, first wrong: 7 | pairs: 500 | dropped: 0
+Matched-council Delphi minus small-council Delphi (does strength help?): +7.82 pp  [95% CI +5.21, +10.62]
+    first right, second wrong: 44 | second right, first wrong: 5 | pairs: 499 | dropped: 1
+
+PROCESS
+small: reconsideration on 186/499; right-to-wrong 8, wrong-to-right 40
+matched: reconsideration on 114/500; right-to-wrong 6, wrong-to-right 19
+seat: reconsideration on 113/500; right-to-wrong 4, wrong-to-right 20
+Matched council: a correct candidate existed on 450/500
+Matched Delphi accuracy when a correct candidate existed: 96.67%
+G: final answer equals JEV's own answer on 451/500
+
+COUNCIL MODELS: FIRST SAMPLE -> OWN CROWD
+small openai gpt-4.1-mini-2025-04-14: 63.60% -> 65.93%
+small anthropic claude-haiku-4-5-20251001: 68.20% -> 67.94%
+small mistral ministral-14b-2512: 60.72% -> 60.32%
+matched openai gpt-5.5-2026-04-23: 82.60% -> 83.00%
+matched anthropic claude-sonnet-5-5: 83.60% -> 83.40%
+matched mistral mistral-medium-3-5: 69.00% -> 70.00%
+
+Recorded spend: $30.1941 (frozen cap $30.00)
+Cap raised on 2026-11-19T22:21:40+00:00 from $30.00 to $31.00 at $30.00 spent: Cap reached with 2 questions left; calibration estimate was slightly low
+By condition: jev_alone $0.0170, matched $20.5719, seat $4.3322, small $5.2730

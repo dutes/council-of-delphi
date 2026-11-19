@@ -1,0 +1,9 @@
+FOLLOW-UP STUDY - OPERATIONS ONLY
+Freeze: delphi-followup-matched-council-v1
+Complete jev_alone: 500/500
+Complete small: 499/500
+Complete matched: 500/500
+Complete seat: 500/500
+Recorded spend: $30.1941 of $31.00
+Failed calls: 17
+No interim accuracy is displayed.

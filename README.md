@@ -1,20 +1,25 @@
 # Council of Delphi
 
-**Does a council of small LLMs, steered by a structured judge, beat the judge on its own?**
+**Does a council of LLMs, steered by a structured judge, beat the judge on its own?**
 
-No. And I think that's the most interesting thing this project found.
+It depends on the council, and finding that out changed my mind.
 
-I built this to test an idea that sounds obviously right: if one model can be wrong, ask several, let them see each other's reasoning, and have a judge decide when they should think again. It's the Delphi method, applied to LLMs. I pre-registered the study, froze the data and code before any scored run, and reported every result, including the ones that went against me.
+I built this to test an idea that sounds obviously right: if one model can be wrong, ask several, let them see each other's reasoning, and have a judge decide when they should think again. It's the Delphi method, applied to LLMs. I ran it twice. Both studies were pre-registered, with the data and code frozen before any scored run, and I've reported every result, including the ones that went against me.
 
 ## The short version
 
-On 494 multiple-choice questions from MMLU-Pro and ARC-Challenge:
+**Study 1: a council of three small models** (494 questions from MMLU-Pro and ARC-Challenge).
 
-- The judge-controlled Delphi process beat the council's simple majority vote by **+13.2 points** (95% CI +9.7 to +16.8). That was my pre-registered primary result, and it held.
-- However, the judge **on its own** scored **87.3%**. The full Delphi process scored **80.8%**. Adding the council made the judge worse by **6.5 points** (95% CI +3.4 to +9.5). I didn't pre-register that comparison; I added it after the locked analysis, because the JEV-alone control made the question impossible to ignore.
-- On 45 questions the judge was right alone and the council process got it wrong. The reverse happened 13 times.
+- The judge-controlled Delphi process beat the council's own majority vote by **+13.2 points** (95% CI +9.7 to +16.8). That was the pre-registered primary result, and it held.
+- However, the judge **on its own** scored **87.3%**, and the Delphi process it ran scored **80.8%**. Adding the council made the judge worse by **6.5 points**. I hadn't pre-registered that comparison, so I treated it as a finding to test, not a conclusion.
 
-So the judge rescued a weak council, and the council then dragged the judge down. If you have a strong model available, wrapping it in a committee of weaker ones cost accuracy here, not gained it.
+**Study 2: the follow-up** (500 new questions). Is the council the problem, or just *that* council? This time the main question was set in advance, along with exactly what would change my mind.
+
+- With the **same small council**, the judge alone beat the Delphi process again, by **4.2 points** (95% CI +1.2 to +7.2). The first result replicated.
+- With a **strong council** (GPT-5.5, Claude Sonnet 5.5 and Mistral Medium 3.5, all with reasoning switched off), the Delphi process **beat the judge alone by 3.6 points**: 89.8% against 86.2% (95% CI 1.0 to 6.2). That's the outcome I'd committed in writing to treat as proof I was wrong to generalise.
+- Letting the judge's own answer sit anonymously among the candidates did best of all: **91.0%**, **4.8 points** above the judge alone.
+
+So a weak council drags a good judge down, a strong one lifts it, and a judge that can weigh its own answer alongside a strong council does better than either alone.
 
 ## Why I ran it
 
@@ -28,7 +33,7 @@ I wanted to separate three things that usually get bundled together:
 
 Each step either adds accuracy or it doesn't. I measured each one separately.
 
-## How it works
+## How it works (study 1)
 
 ```text
 question
@@ -47,7 +52,7 @@ question
 
 **The control that matters:** JEV also answers every question on its own, with no council input. Without that, you can't tell whether a judge is good at *arbitrating* or just good at *answering*.
 
-## Results
+## Study 1 results
 
 | Condition | Accuracy |
 |---|---|
@@ -73,7 +78,46 @@ A few things stand out:
 - **The judge was an excellent selector.** When a correct answer existed among the council's positions, JEV picked it 95% of the time. The problem is that a correct position only existed on 382 of 494 questions. A judge can't select an answer nobody gave.
 - **Reconsideration worked, but not enough.** JEV asked for a second round on 220 questions. That lifted the council, and still didn't close the gap to JEV answering alone.
 
-## Supporting experiments
+## The follow-up: what if the council is strong?
+
+Study 1 left an obvious objection: of course a strong judge gets worse when it has to listen to weaker models. Picture a good referee forced to consult three linesmen with bad eyesight. So I wrote a [follow-up protocol](docs/FOLLOWUP_PROTOCOL.md) to test that directly, and froze it before the run.
+
+**The design.** Same judge, same Delphi procedure, same prompts, 500 new questions. Four conditions ran on every question:
+
+- JEV alone
+- Delphi with the original small council (a replication of study 1)
+- Delphi with a strong council
+- Delphi with the strong council, plus JEV's own answer added as one more anonymous candidate
+
+**Choosing the strong council.** I don't know which model powers JEV, so I matched on measured accuracy instead. On 60 separate calibration questions, I measured JEV and nine candidate models, and picked from each provider the cheapest model within 3 points of JEV. Reasoning stayed switched off, as in study 1. With reasoning on, the strongest models leave a judge little to add. With it off, no model came within 3 points, so the rule fell back to the closest model from each provider. The strong council was a big step up, but it wasn't JEV's equal, and the protocol says so.
+
+**Results**
+
+| Condition | Accuracy |
+|---|---|
+| Delphi, original small council | 82.0% |
+| Strong council, simple majority vote | 82.8% |
+| **JEV alone** | **86.2%** |
+| Delphi, strong council | 89.8% |
+| **Delphi, strong council plus JEV as a candidate** | **91.0%** |
+
+| Comparison | Difference |
+|---|---|
+| JEV alone vs Delphi with the strong council (primary) | **−3.6 pp** [−6.2, −1.0] |
+| JEV alone vs Delphi with the small council (replication) | +4.2 pp [+1.2, +7.2] |
+| Delphi with JEV as a candidate vs JEV alone | **+4.8 pp** [+2.4, +7.4] |
+| Delphi vs majority vote, strong council | +7.0 pp [+4.4, +9.8] |
+| Strong council vs small council, both under Delphi | +7.8 pp [+5.2, +10.6] |
+
+**What I take from it:**
+
+- **Council strength decides whether a council helps.** Same judge, same process, stronger council: almost 8 points better. Study 1's result was real, but it was a result about weak councils.
+- **The strong council didn't need to match the judge to help it.** Its models scored between 69% and 84% on their own, against JEV's 86%. My reading is that different models get different questions wrong, and the process pooled what each one got right.
+- **The judge still earns its place.** The strong council's own majority vote scored 82.8%. With JEV running the process, it reached 89.8%.
+- **Reconsideration helps more than it hurts.** With the strong council, JEV asked for a second round on 114 questions. That turned 19 wrong answers right and 6 right answers wrong.
+- **Give the judge a vote.** When JEV's own answer was an anonymous candidate, the final answer matched it on 451 of 500 questions. The other 49 are where the council talked it round, and that's where the extra accuracy came from.
+
+
 
 I ran three smaller studies on synthetic data to test the plumbing of evidence routing. I treat them as engineering checks, not headline findings: the tasks were built so that full evidence makes them easy, and several conditions hit 100%.
 
@@ -85,14 +129,17 @@ The protocols for these are in `docs/` (`EVIDENCE_PROTOCOL.md`, `ACTIVE_DELPHI_*
 
 I'd rather state these plainly than have a reader find them:
 
-- **The council and the judge aren't equally capable.** The council is three small, fast models. TypeSafe doesn't publish which model powers JEV, and I've asked. Part of the "judge beats council" result may simply be that a stronger model beats weaker ones. A council of frontier models could behave differently, and that's what the [follow-up study](docs/FOLLOWUP_PROTOCOL.md) tests.
-- **One model slate, one prompt, one question mix.** The results apply to this setup. They don't show that councils never help.
+- **One judge, two model slates, one prompt, one question mix.** The results apply to this setup. They show that council strength matters here; they don't show that councils always or never help.
+- **I don't know what JEV runs on.** TypeSafe doesn't publish it, and I've asked. JEV beat every council model with reasoning switched off, GPT-5.5 included. If JEV reasons internally, part of what both studies measured is a judge that reasons against a council that doesn't.
+- **The strong council wasn't matched to the judge.** No candidate came within 3 points of JEV on calibration, so the closest from each provider was chosen. The calibration step also used only 60 questions, which can't resolve a 3-point gap (each question is worth 1.7 points). GPT-5.5 scored 75% on calibration and 83% across the full 500.
+- **"Reasoning off" means different settings for different providers.** GPT-5.5 and Mistral Medium 3.5 ran with `reasoning_effort: "none"`. Claude Sonnet 5.5 can't fully disable thinking, so it ran with `thinking: "between_tools"`, which turns off up-front thinking. Every response was checked, and none of the 12,650 successful calls in the follow-up contained reasoning. Sonnet 5.5 also rejects a temperature setting, so it ran at Anthropic's default instead of 0.7. One error to own: the follow-up's frozen freeze record labels Sonnet 5.5's setting as `reasoning_effort none`. The request the code actually sent is `thinking: "between_tools"`, as the protocol's text and `followup_study/providers.py` show.
 - **Public benchmarks.** MMLU-Pro and ARC questions may appear in the models' training data.
 - **Model substitution before the run.** Google's `gemini-2.5-flash` was the planned third model, but its API rejected new users during preflight. Mistral Large 3 was blocked by my subscription tier, so I used Ministral 14B, the strongest available Mistral model without reasoning mode. No scored data was produced before the swap.
 - **One aborted start.** The first run was stopped after six questions because a 512-token output limit truncated JSON responses. I quarantined that database, raised the limit to 2,048 tokens for all models, and restarted. Nothing else changed, and no accuracy was inspected.
-- **Incomplete questions.** 494 of 500 questions completed, with 41 failed calls across the run. That's inside the 2% missingness limit I set in advance.
+- **Incomplete questions.** In study 1, 494 of 500 questions completed, with 41 failed calls, inside the 2% limit I set in advance. In the follow-up, all 500 completed for the primary comparison. 17 calls failed, almost all of them small-council answers cut off mid-JSON, which left one question incomplete for the small council.
+- **One cost-cap amendment.** The follow-up's $30 cap paused the run with 2 questions left. I raised it to $31 to finish them. The analysis report records the change, the time and the reason.
 
-Full details are in [`docs/PROTOCOL.md`](docs/PROTOCOL.md).
+Full details are in [`docs/PROTOCOL.md`](docs/PROTOCOL.md) and [`docs/FOLLOWUP_PROTOCOL.md`](docs/FOLLOWUP_PROTOCOL.md).
 
 ## Rigour, on a budget
 
@@ -103,7 +150,7 @@ Full details are in [`docs/PROTOCOL.md`](docs/PROTOCOL.md).
 - Earlier exploratory experiments quarantined under `archived/` and never pooled with these results
 - Every scored run is stored as a SQLite database in `results/`, so the analysis can be re-run without new API calls
 
-Total recorded API spend for the four scored studies: **under $9**. Rigorous evaluation doesn't need a lab budget. It needs discipline about what you decide before you look.
+Total recorded API spend: **under $9** for study 1 and its three supporting studies, and **$32.27** for the follow-up, including calibration. Rigorous evaluation doesn't need a lab budget. It needs discipline about what you decide before you look.
 
 ## Reproducing it
 
@@ -115,6 +162,14 @@ python analyze_posthoc.py
 ```
 
 The first command reproduces the locked, pre-registered report. It refuses to run if any frozen file has changed, so the post-hoc comparison lives in its own script rather than being edited into the locked one.
+
+The follow-up's locked analysis works the same way:
+
+```bash
+python analyze_followup.py --output results/reanalysis-followup-v1.txt
+```
+
+I re-ran it from the stored database on a second machine, and it matched the original report line for line.
 
 ## Data
 
