@@ -51,6 +51,26 @@ def candidate_list(spec: dict) -> list[tuple[str, str, tuple[float, float], bool
     return found
 
 
+def adopt_older_database(db: str, spec: dict, dataset_sha: str, plan: str) -> None:
+    """Calibration databases made before 19 Nov 2026 also hashed the candidate list. If this
+    one matches the current settings plus the candidates dropped since, keep its answers."""
+    if not Path(db).exists():
+        return
+    import copy
+    import sqlite3
+    older = copy.deepcopy(spec)
+    for dropped in older.get("dropped_candidates", []):
+        provider = next(p for p in PROVIDERS if dropped["model"].startswith(
+            {"openai": "gpt", "anthropic": "claude", "mistral": ("mistral", "ministral")}[p]))
+        older["candidates"][provider].append({"model": dropped["model"], "pricing": [0, 0]})
+    old_plan = hashlib.sha256(json.dumps([dataset_sha, [m[:2] for m in candidate_list(older)],
+                                          sha256_file("followup_study/providers.py")]).encode()).hexdigest()
+    with sqlite3.connect(db) as connection:
+        row = connection.execute("SELECT value FROM meta WHERE key='freeze_hash'").fetchone()
+        if row and row[0] == "calibration:" + old_plan:
+            connection.execute("UPDATE meta SET value=? WHERE key='freeze_hash'", ("calibration:" + plan,))
+
+
 def stage_of(provider: str, model: str) -> str:
     return f"model:{provider}:{model}"
 
@@ -149,6 +169,7 @@ async def main() -> int:
     jev_config = single_model_config(spec, "openai", spec["arms"]["small"]["openai"])
 
     Path(args.db).parent.mkdir(parents=True, exist_ok=True)
+    adopt_older_database(args.db, spec, dataset_sha, plan)
     try:
         store_cm = FollowupStore(args.db, "calibration:" + plan, questions)
     except RuntimeError as error:
