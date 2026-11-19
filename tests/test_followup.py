@@ -201,8 +201,33 @@ def test_calibration_picks_the_cheapest_close_model_or_falls_back_to_the_best():
         "mistral|e": {"provider": "mistral", "model": "e", "candidate": True, "accuracy": .87, "cost_per_question": .01},
         "mistral|small": {"provider": "mistral", "model": "small", "candidate": False, "accuracy": .99, "cost_per_question": .0},
     }
+    table["openai|f"] = {"provider": "openai", "model": "f", "candidate": True, "accuracy": .97, "cost_per_question": .001}
     chosen = choose(spec, table, jev_accuracy=.88)
-    assert chosen["openai"]["model"] == "a"          # within 3 points and cheapest
-    assert chosen["anthropic"]["model"] == "d"       # none close: most accurate
+    assert chosen["openai"]["model"] == "a"          # within 3 points and cheapest; f is far too strong
+    assert chosen["anthropic"]["model"] == "d"       # none within 3 points: closest to JEV
     assert chosen["anthropic"]["gap_to_jev_pp"] == 13.0
     assert chosen["mistral"]["model"] == "e"         # the small-council model is never a candidate
+
+
+def test_reasoning_is_switched_off_only_where_a_model_has_it():
+    from followup_study.providers import reasoning_off
+    assert reasoning_off("openai", "gpt-5.4-2026-03-05") == {"reasoning_effort": "none"}
+    assert reasoning_off("openai", "gpt-4.1-2025-04-14") == {}
+    assert reasoning_off("openai", "gpt-4.1-mini-2025-04-14") == {}   # the small council is unchanged
+    assert reasoning_off("mistral", "mistral-medium-3-5") == {"reasoning_effort": "none"}
+    assert reasoning_off("mistral", "ministral-14b-2512") == {}
+    assert reasoning_off("anthropic", "claude-opus-5-5") == {}
+
+
+async def test_a_mistral_reply_with_thinking_is_rejected(monkeypatch):
+    import followup_study.providers as providers
+    async def fake_post(*_args, **_kwargs):
+        return {"choices": [{"message": {"content": [{"type": "thinking", "thinking": []},
+                                                    {"type": "text", "text": "{}"}]}}]}, 1.0
+    monkeypatch.setattr(providers, "post", fake_post)
+    monkeypatch.setenv("MISTRAL_API_KEY", "x")
+    spec, _ = load_spec(ROOT / "config/followup_v1.json")
+    config = arm_config(spec, "small")
+    q = Question(id="q", question="?", choices=CHOICES, correct_label="A")
+    with pytest.raises(providers.ProviderError, match="reasoning"):
+        await providers.ask_mistral(q, config, member_id="m", stage="initial", sample_index=1)

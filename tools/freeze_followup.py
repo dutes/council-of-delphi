@@ -19,6 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from followup_study.providers import reasoning_off  # noqa: E402
 from followup_study.spec import PROVIDERS, implementation_hash, load_questions, sha256_file  # noqa: E402
 
 
@@ -66,7 +67,9 @@ def main() -> None:
         raise SystemExit("Couldn't find the freeze record section in the protocol")
     jev_pct = 100 * calibration["jev_alone_accuracy"]
     picks = "\n".join(
-        f"  - {p}: `{c['model']}`, {100 * c['accuracy']:.1f}% on calibration "
+        f"  - {p}: `{c['model']}`"
+        + (" (reasoning_effort none)" if reasoning_off(p, c['model']) else "")
+        + f", {100 * c['accuracy']:.1f}% on calibration "
         f"({abs(c['gap_to_jev_pp']):.1f} points {'below' if c['gap_to_jev_pp'] >= 0 else 'above'} JEV alone), {c['rule']}"
         for p, c in calibration["chosen"].items())
     candidates = "\n".join(f"  - {p}: " + ", ".join(f"`{e['model']}`" for e in spec["candidates"][p])

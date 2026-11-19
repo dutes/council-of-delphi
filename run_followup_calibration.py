@@ -5,9 +5,10 @@ strength-matched council").
     python run_followup_calibration.py --execute     # 60 calibration questions; resumable
 
 Measures JEV alone and each candidate's first answer (one sample, the first
-study's prompt and temperature) on the 60 calibration questions, then applies
-the selection rule: for each provider, the cheapest candidate within the
-tolerance of JEV alone, otherwise that provider's most accurate candidate.
+study's prompt and temperature, reasoning switched off) on the 60 calibration
+questions, then applies the selection rule: for each provider, the cheapest
+candidate within the tolerance of JEV alone in either direction, otherwise the
+candidate closest to JEV alone.
 
 These 60 questions are only for matching. They're never used in the analysis.
 """
@@ -24,7 +25,7 @@ from statistics import mean
 
 from arbiter_study.jev import answer_alone
 from arbiter_study.models import Arbitration, Question
-from arbiter_study.providers import ask_provider
+from followup_study.providers import ask_provider
 from followup_study.pipeline import answer_stage, decision_stage
 from followup_study.spec import PROVIDERS, load_questions, load_spec, sha256_file, single_model_config
 from followup_study.store import FollowupStore
@@ -76,13 +77,15 @@ def choose(spec: dict, table: dict, jev_accuracy: float) -> dict:
     chosen = {}
     for provider in PROVIDERS:
         options = [row for row in table.values() if row["provider"] == provider and row["candidate"]]
-        close = [row for row in options if row["accuracy"] >= jev_accuracy - tolerance]
+        # A match means close to JEV in either direction: a much stronger council isn't a match either.
+        close = [row for row in options if abs(row["accuracy"] - jev_accuracy) <= tolerance + 1e-9]
         if close:
-            pick = min(close, key=lambda row: (row["cost_per_question"], -row["accuracy"], row["model"]))
+            pick = min(close, key=lambda row: (row["cost_per_question"], row["model"]))
             rule = f"cheapest within {spec['match_tolerance_pp']} points of JEV alone"
         else:
-            pick = max(options, key=lambda row: (row["accuracy"], -row["cost_per_question"], row["model"]))
-            rule = "no candidate within tolerance; most accurate candidate"
+            pick = min(options, key=lambda row: (abs(row["accuracy"] - jev_accuracy),
+                                                 row["cost_per_question"], row["model"]))
+            rule = "no candidate within the window; closest to JEV alone"
         chosen[provider] = {"model": pick["model"], "accuracy": pick["accuracy"],
                             "gap_to_jev_pp": round(100 * (jev_accuracy - pick["accuracy"]), 2),
                             "rule": rule}

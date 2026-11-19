@@ -20,7 +20,7 @@ IMPLEMENTATION_FILES = (
     "arbiter_study/models.py", "arbiter_study/core.py", "arbiter_study/config.py",
     "arbiter_study/providers.py", "arbiter_study/jev.py",
     "followup_study/__init__.py", "followup_study/spec.py", "followup_study/store.py",
-    "followup_study/seat.py", "followup_study/pipeline.py",
+    "followup_study/seat.py", "followup_study/providers.py", "followup_study/pipeline.py",
     "run_followup.py", "analyze_followup.py", "docs/FOLLOWUP_PROTOCOL.md",
 )
 

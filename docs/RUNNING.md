@@ -66,11 +66,11 @@ virtual environment active.
 python tools/list_models.py
 ```
 
-Put the candidate models for each provider into `"candidates"` in
-`config/followup_v1.json`, with their prices per million input and output
-tokens, for example
-`{"model": "gpt-4.1-2025-04-14", "pricing": [2.0, 8.0]}`. Only models with no
-hidden reasoning mode qualify.
+The candidates for each provider are in `"candidates"` in
+`config/followup_v1.json`, with their list prices per million input and output
+tokens. Check the prices are still current before calibrating. Models that can
+reason are called with reasoning switched off, and any response that reasons
+anyway fails (see the protocol's "Reasoning switched off").
 
 **2. Build the questions.** Needs internet access to Hugging Face and the
 quarantined archive in `archived/`, which it uses to exclude every question

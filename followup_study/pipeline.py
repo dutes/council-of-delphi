@@ -20,7 +20,7 @@ from arbiter_study.config import StudyConfig
 from arbiter_study.core import PROVIDERS, aggregate_provider_crowd, reconsideration_context
 from arbiter_study.jev import answer_alone, arbitrate, assess_delphi
 from arbiter_study.models import Arbitration, DelphiAssessment, ModelAnswer, ProviderPosition, Question
-from arbiter_study.providers import ask_provider
+from followup_study.providers import ask_provider
 from followup_study.seat import seat_position
 from followup_study.store import FollowupStore
 

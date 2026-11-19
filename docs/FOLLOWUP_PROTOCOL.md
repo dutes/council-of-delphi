@@ -100,20 +100,45 @@ measured accuracy rather than on model names.
    used only for matching and are excluded from every analysis.
 2. **Measure JEV alone** on the calibration set.
 3. **Candidate models.** For each of OpenAI, Anthropic and Mistral, a short
-   list of general-purpose models with no hidden reasoning mode enabled,
-   fixed before calibration *[to fix at freeze: list of dated model IDs]*.
+   list of general-purpose models, fixed in `config/followup_v1.json` before
+   calibration, with reasoning switched off (see below).
 4. **Measure each candidate's first-answer accuracy** (one sample, the first
    study's prompt and temperature) on the calibration set.
 5. **Selection rule.** For each provider, pick the cheapest candidate, by
    measured cost per question on the calibration set, whose accuracy is
-   within 3 points of JEV alone. If none qualifies, pick that
-   provider's most accurate candidate and record the gap.
+   within 3 points of JEV alone in either direction. A council far stronger
+   than JEV isn't a match any more than a far weaker one. If no candidate is
+   within 3 points, pick the one closest to JEV alone and record the gap.
 6. Record the chosen models, their calibration accuracy and the gaps in the
    freeze record before any scored call.
 
-If the best available council is still more than 3 points below JEV on
-average, the study runs anyway, and the report has to say the match wasn't
-achieved and by how much.
+If a provider has no candidate within 3 points, the study runs anyway, and the
+report has to say the match wasn't achieved and by how much.
+
+### Reasoning switched off
+
+The first study used only models with no reasoning mode, because with
+reasoning on, the strongest models leave a judge little to add. That stays
+true here: no council model reasons before answering. However, almost no model
+built without reasoning gets near JEV's accuracy, so the strict rule would make
+a matched council impossible for two of the three providers.
+
+So the follow-up allows models that *can* reason, with reasoning switched off on
+every call:
+
+- **OpenAI** GPT-5 family: `reasoning_effort` set to `none`.
+- **Mistral** Medium and Small: `reasoning_effort` set to `none`.
+- **Anthropic:** extended thinking is never requested, as in the first study.
+
+Every response is checked as before. Reasoning tokens, a thinking block or a
+reasoning field fails the call. A candidate that reasons anyway fails the
+preflight check and is dropped before calibration. Models with no reasoning
+mode, including the whole original small council, are called exactly as in the
+first study.
+
+This is the first protocol's own definition ("no enabled hidden reasoning
+mode"). The first study went further and also excluded models that could
+reason, based on their listing; the follow-up doesn't.
 
 ## Outcomes and estimands
 
@@ -146,7 +171,7 @@ Also reported:
 ## Analysis
 
 - Paired question bootstrap, 10,000 draws, 95% percentile intervals, with the
-  analysis seed fixed at freeze *[to fix at freeze]*.
+  analysis seed set in `config/followup_v1.json`.
 - One primary estimand, so no multiplicity correction on it. The secondary
   estimands are reported with their intervals and described as secondary.
 - Questions with a missing value in a comparison's two conditions are dropped

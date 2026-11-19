@@ -15,7 +15,7 @@ from pathlib import Path
 from arbiter_study.core import PROVIDERS
 from arbiter_study.jev import answer_alone, arbitrate, assess_delphi
 from arbiter_study.models import ProviderPosition, Question
-from arbiter_study.providers import ask_provider
+from followup_study.providers import ask_provider
 from followup_study.pipeline import FINAL_STAGES, run_question
 from followup_study.seat import seat_position
 from followup_study.spec import ARMS, arm_config, load_questions, load_spec, require_frozen
