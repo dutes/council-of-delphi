@@ -140,9 +140,10 @@ async def main() -> int:
     dataset_sha = sha256_file(path)
     questions = load_questions(path, expected_count=60)
     models = candidate_list(spec)
-    # The plan covers the questions, the models and how they're called, so a calibration
-    # database can never mix answers from different request settings.
-    plan = hashlib.sha256(json.dumps([dataset_sha, [m[:2] for m in models],
+    # The plan covers the questions and how models are called, so a calibration database
+    # can never mix answers from different request settings. Each model's answers are filed
+    # under its own name, so adding or dropping a candidate keeps everything already answered.
+    plan = hashlib.sha256(json.dumps([dataset_sha,
                                       sha256_file("followup_study/providers.py")]).encode()).hexdigest()
     attempts = spec["max_attempts_per_stage"]
     jev_config = single_model_config(spec, "openai", spec["arms"]["small"]["openai"])
@@ -151,7 +152,7 @@ async def main() -> int:
     try:
         store_cm = FollowupStore(args.db, "calibration:" + plan, questions)
     except RuntimeError as error:
-        raise RuntimeError(f"{args.db} was made with different models or settings. Delete it "
+        raise RuntimeError(f"{args.db} was made with different questions or request settings. Delete it "
                            "and run calibration again from the start.") from error
     with store_cm as store:
         for index, source in enumerate(questions, start=1):

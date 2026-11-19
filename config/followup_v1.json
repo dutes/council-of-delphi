@@ -66,13 +66,6 @@
           5.0,
           25.0
         ]
-      },
-      {
-        "model": "claude-sonnet-4-6",
-        "pricing": [
-          3.0,
-          15.0
-        ]
       }
     ],
     "mistral": [
@@ -146,5 +139,11 @@
     "docs/FOLLOWUP_PROTOCOL.md"
   ],
   "implementation_sha256": null,
-  "candidate_prices_checked": "2026-11-19, list prices per 1M input/output tokens from the providers' pricing pages; re-check before calibrating"
+  "candidate_prices_checked": "2026-11-19, list prices per 1M input/output tokens from the providers' pricing pages; re-check before calibrating",
+  "dropped_candidates": [
+    {
+      "model": "claude-sonnet-4-6",
+      "reason": "Repeatedly broke the answer format during calibration (confidence written as a percentage, e.g. 99 instead of 0.99), failing 4 of 60 questions on both attempts, above the 5% missing limit"
+    }
+  ]
 }
