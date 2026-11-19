@@ -240,3 +240,36 @@ def test_temperature_is_left_out_only_for_models_that_reject_it():
     assert temperature(config, "claude-opus-5-5") == {}
     assert temperature(config, "claude-haiku-4-5-20251001") == {"temperature": 0.7}
     assert temperature(config, "gpt-5.4-2026-03-05") == {"temperature": 0.7}
+
+
+async def test_a_rate_limited_call_waits_and_tries_again(monkeypatch):
+    import followup_study.providers as providers
+    calls = []
+
+    async def flaky(question, config, **kwargs):
+        calls.append(1)
+        if len(calls) < 3:
+            raise providers.ProviderError("mistral request failed: HTTP 429: rate limited")
+        return "answer"
+
+    async def no_wait(_seconds):
+        return None
+
+    monkeypatch.setitem(providers.PROVIDER_FUNCTIONS, "mistral", flaky)
+    monkeypatch.setattr(providers.asyncio, "sleep", no_wait)
+    result = await providers.ask_provider("mistral", None, None, member_id="m", stage="initial", sample_index=1)
+    assert result == "answer" and len(calls) == 3
+
+
+async def test_other_errors_are_not_retried(monkeypatch):
+    import followup_study.providers as providers
+    calls = []
+
+    async def broken(question, config, **kwargs):
+        calls.append(1)
+        raise providers.ProviderError("mistral request failed: HTTP 400: bad request")
+
+    monkeypatch.setitem(providers.PROVIDER_FUNCTIONS, "mistral", broken)
+    with pytest.raises(providers.ProviderError):
+        await providers.ask_provider("mistral", None, None, member_id="m", stage="initial", sample_index=1)
+    assert len(calls) == 1

@@ -19,6 +19,7 @@ from arbiter_study.providers without changes.
 
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 from arbiter_study.config import StudyConfig
@@ -133,7 +134,24 @@ async def ask_mistral(question: Question, config: StudyConfig, *, member_id: str
 PROVIDER_FUNCTIONS = {"openai": ask_openai, "anthropic": ask_anthropic, "mistral": ask_mistral}
 
 
+# The first study's HTTP layer retries a rate limit twice within about a second. That's too
+# quick for an account on a low rate tier (Mistral's starts around one request a second), so
+# a rate-limited call waits and tries again here, up to five more times over about a minute.
+RATE_LIMIT_WAITS = (2, 4, 8, 16, 32)
+
+
+def rate_limited(error: Exception) -> bool:
+    return isinstance(error, ProviderError) and "HTTP 429" in str(error)
+
+
 async def ask_provider(provider: str, question: Question, config: StudyConfig, *, member_id: str,
                        stage: str, sample_index: int, context: dict[str, Any] | None = None) -> ModelAnswer:
-    return await PROVIDER_FUNCTIONS[provider](question, config, member_id=member_id, stage=stage,
-                                              sample_index=sample_index, context=context)
+    for wait in (*RATE_LIMIT_WAITS, None):
+        try:
+            return await PROVIDER_FUNCTIONS[provider](question, config, member_id=member_id, stage=stage,
+                                                      sample_index=sample_index, context=context)
+        except ProviderError as error:
+            if wait is None or not rate_limited(error):
+                raise
+            await asyncio.sleep(wait)
+    raise AssertionError("unreachable")
