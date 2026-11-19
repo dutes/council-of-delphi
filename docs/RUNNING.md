@@ -100,7 +100,7 @@ freeze record, and marks the study frozen. Pick the cost cap from the estimate
 in step 4. Commit and push straight afterwards:
 
 ```powershell
-python tools/freeze_followup.py --cost-cap 60
+python tools/freeze_followup.py --cost-cap 30
 python run_followup.py
 ```
 
@@ -110,5 +110,16 @@ accuracy. The analysis refuses to run until every question is finished:
 ```powershell
 python run_followup.py --execute --limit 5    # optional smoke test
 python run_followup.py --execute
+python run_followup.py --status               # progress and spend, never accuracy
 python analyze_followup.py
+```
+
+**If it stops.** Run `--execute` again. Finished questions are skipped and
+unfinished ones carry on from the step they stopped on, so only the missing
+calls are made. If the cost cap paused it, raise the cap with a reason. The
+amendment is recorded in the results database and printed in the analysis
+report:
+
+```powershell
+python run_followup.py --execute --raise-cap 40 --reason "Calibration estimate was low"
 ```

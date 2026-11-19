@@ -2,13 +2,23 @@
 
     python run_followup.py                # validate the freeze; no network calls
     python run_followup.py --preflight    # one synthetic question through every model and JEV call
-    python run_followup.py --execute      # the scored run (resumable)
+    python run_followup.py --execute      # the scored run
+    python run_followup.py --status       # progress and spend; never accuracy
+
+Resuming: run --execute again. Finished questions are skipped, and unfinished ones
+pick up at the step they stopped on, so only the missing calls are made.
+
+If the cost cap pauses the run, raise it with a reason, which is recorded in the
+database and shown in the analysis report, then carry on:
+
+    python run_followup.py --execute --raise-cap 40 --reason "Estimate was low"
 """
 
 from __future__ import annotations
 
 import argparse
 import asyncio
+import datetime as dt
 import os
 from pathlib import Path
 
@@ -16,7 +26,7 @@ from arbiter_study.core import PROVIDERS
 from arbiter_study.jev import answer_alone, arbitrate, assess_delphi
 from arbiter_study.models import ProviderPosition, Question
 from followup_study.providers import ask_provider
-from followup_study.pipeline import FINAL_STAGES, run_question
+from followup_study.pipeline import FINAL_STAGES, finished, run_question
 from followup_study.seat import seat_position
 from followup_study.spec import ARMS, arm_config, load_questions, load_spec, require_frozen
 from followup_study.store import FollowupStore
@@ -74,6 +84,9 @@ async def main() -> int:
     parser.add_argument("--limit", type=int, help="only the first N questions (for a smoke test)")
     parser.add_argument("--preflight", action="store_true")
     parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--status", action="store_true")
+    parser.add_argument("--raise-cap", type=float, help="new cost cap in USD (recorded as an amendment)")
+    parser.add_argument("--reason", default="", help="why the cap is being raised")
     args = parser.parse_args()
 
     spec, freeze_hash = load_spec(args.config)
@@ -89,6 +102,20 @@ async def main() -> int:
     questions = load_questions(spec["dataset_path"], spec["dataset_sha256"], spec["question_count"])
     print(f"Freeze: {spec['freeze_id']} | questions: {len(questions)}")
     print("Primary comparison: JEV alone minus Delphi with the strength-matched council")
+    if args.status or args.raise_cap is not None:
+        Path(args.db).parent.mkdir(parents=True, exist_ok=True)
+        with FollowupStore(args.db, freeze_hash, questions) as store:
+            if args.raise_cap is not None:
+                store.raise_cap(spec["max_recorded_cost_usd"], args.raise_cap, args.reason,
+                                dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"))
+                print(f"Cost cap raised to ${args.raise_cap:.2f}. This is recorded and shown in the report.")
+            if args.status:
+                done = sum(finished(store, q.id) for q in questions)
+                print(f"Finished questions: {done}/{len(questions)}")
+                print(f"Recorded spend: ${store.cost():.4f} of ${store.effective_cap(spec['max_recorded_cost_usd']):.2f}")
+                print(f"Failed calls: {store.failures()}")
+        if not args.execute:
+            return 0
     if not args.execute:
         print("Validation passed. No network calls or writes made.")
         return 0
@@ -97,15 +124,18 @@ async def main() -> int:
         print("Missing environment variables: " + ", ".join(missing))
         return 2
 
-    cap = float(spec["max_recorded_cost_usd"])
     selected = questions[:args.limit] if args.limit else questions
     Path(args.db).parent.mkdir(parents=True, exist_ok=True)
     with FollowupStore(args.db, freeze_hash, questions) as store:
-        for index, question in enumerate(selected, start=1):
+        cap = store.effective_cap(spec["max_recorded_cost_usd"])
+        remaining = [q for q in selected if not finished(store, q.id)]
+        print(f"Questions still to finish: {len(remaining)} of {len(selected)}")
+        for index, question in enumerate(remaining, start=1):
             if store.cost() >= cap:
-                print(f"PAUSED: recorded cost cap of ${cap:.2f} reached")
+                print(f"PAUSED: recorded cost cap of ${cap:.2f} reached with {len(remaining) - index + 1} "
+                      "questions unfinished. To carry on, re-run with --raise-cap and --reason.")
                 break
-            print(f"[{index:03d}/{len(selected)}] {question.id}")
+            print(f"[{index:03d}/{len(remaining)}] {question.id}")
             await run_question(question, configs, store, spec["max_attempts_per_stage"])
             Path(args.progress).write_text(
                 "FOLLOW-UP STUDY - OPERATIONS ONLY\n"

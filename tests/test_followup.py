@@ -27,7 +27,7 @@ def make_spec(tmp: Path, questions: list[Question]) -> tuple[dict, str]:
     data = tmp / "followup.jsonl"
     data.write_text("".join(q.model_dump_json() + "\n" for q in questions), encoding="utf-8")
     spec.update(dataset_path=str(data), dataset_sha256=sha256_file(data), question_count=len(questions),
-                bootstrap_draws=200)
+                bootstrap_draws=200, max_recorded_cost_usd=10.0)
     spec["arms"]["matched"] = {"openai": "big-o", "anthropic": "big-a", "mistral": "big-m"}
     path = tmp / "config.json"
     path.write_text(json.dumps(spec))
@@ -276,3 +276,36 @@ async def test_other_errors_are_not_retried(monkeypatch):
     with pytest.raises(providers.ProviderError):
         await providers.ask_provider("mistral", None, None, member_id="m", stage="initial", sample_index=1)
     assert len(calls) == 1
+
+
+async def test_raising_the_cap_is_recorded_and_shown_in_the_report(tmp_path, world):
+    qs = questions(3)
+    spec, freeze_hash = make_spec(tmp_path, qs)
+    world({q.id: q.correct_label for q in qs})
+    db = tmp_path / "run.sqlite3"
+    await run_all(spec, freeze_hash, qs, db)
+    with FollowupStore(db, freeze_hash, qs) as store:
+        assert store.effective_cap(10.0) == 10.0
+        with pytest.raises(RuntimeError, match="above the current"):
+            store.raise_cap(10.0, 5.0, "lower", "2026-11-20")
+        with pytest.raises(RuntimeError, match="reason"):
+            store.raise_cap(10.0, 40.0, " ", "2026-11-20")
+        store.raise_cap(10.0, 40.0, "Estimate was low", "2026-11-20")
+        assert store.effective_cap(10.0) == 40.0
+    report = analyse(spec, freeze_hash, str(db))
+    assert "Cap raised on 2026-11-20 from $10.00 to $40.00" in report
+    assert "Estimate was low" in report
+    assert "does strength help?" in report
+
+
+async def test_only_unfinished_questions_are_picked_up(tmp_path, world):
+    qs = questions(4)
+    spec, freeze_hash = make_spec(tmp_path, qs)
+    fake = world({q.id: q.correct_label for q in qs})
+    db = tmp_path / "run.sqlite3"
+    await run_all(spec, freeze_hash, qs[:2], db)   # as if the cap stopped the run after two questions
+    with FollowupStore(db, freeze_hash, qs):
+        pass
+    fake.calls.clear()
+    await run_all(spec, freeze_hash, qs, db)
+    assert {qid for qid, _, _ in fake.calls} == {"q2", "q3"}

@@ -7,6 +7,7 @@ no accuracy can be seen part-way through the run.
 from __future__ import annotations
 
 import argparse
+import json
 import random
 import sqlite3
 from collections import Counter
@@ -67,6 +68,8 @@ def analyse(spec: dict, freeze_hash: str, db_path: str) -> str:
             raise RuntimeError("Database is not from this freeze")
         failures = db.execute("SELECT COUNT(*) FROM calls WHERE success=0").fetchone()[0]
         spend = float(db.execute("SELECT COALESCE(SUM(cost),0) FROM calls").fetchone()[0])
+        cap_row = db.execute("SELECT value FROM meta WHERE key='cap_amendments'").fetchone()
+        cap_amendments = json.loads(cap_row[0]) if cap_row else []
         spend_by = dict(db.execute(
             "SELECT CASE WHEN instr(stage, ':') > 0 THEN substr(stage, 1, instr(stage, ':') - 1) "
             "ELSE stage END, COALESCE(SUM(cost),0) FROM calls GROUP BY 1").fetchall())
@@ -137,6 +140,8 @@ def analyse(spec: dict, freeze_hash: str, db_path: str) -> str:
         *line("JEV alone minus small-council Delphi (replication)", *paired("jev_alone", "small"), 1),
         *line("JEV-as-candidate Delphi minus JEV alone", *paired("seat", "jev_alone"), 2),
         *line("Matched-council Delphi minus matched majority", *paired("matched", "matched_vote"), 3),
+        *line("Matched-council Delphi minus small-council Delphi (does strength help?)",
+              *paired("matched", "small"), 4),
         "", "PROCESS",
     ]
     for prefix in ("small", "matched", "seat"):
@@ -163,8 +168,12 @@ def analyse(spec: dict, freeze_hash: str, db_path: str) -> str:
             if first and crowd:
                 lines.append(f"{arm} {provider} {spec['arms'][arm][provider]}: "
                              f"{100 * mean(first):.2f}% -> {100 * mean(crowd):.2f}%")
-    lines += ["", f"Recorded spend: ${spend:.4f}",
-              "By condition: " + ", ".join(f"{k} ${v:.4f}" for k, v in sorted(spend_by.items()))]
+    lines += ["", f"Recorded spend: ${spend:.4f} (frozen cap ${spec['max_recorded_cost_usd']:.2f})"]
+    for amendment in cap_amendments:
+        lines.append(f"Cap raised on {amendment['date']} from ${amendment['previous_cap_usd']:.2f} to "
+                     f"${amendment['new_cap_usd']:.2f} at ${amendment['spend_at_amendment_usd']:.2f} spent: "
+                     f"{amendment['reason']}")
+    lines += ["By condition: " + ", ".join(f"{k} ${v:.4f}" for k, v in sorted(spend_by.items()))]
     return "\n".join(lines) + "\n"
 
 

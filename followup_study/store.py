@@ -120,6 +120,28 @@ class FollowupStore:
                 "INSERT INTO calls(question_id,stage,member_id,success,error) VALUES (?,?,?,0,?)",
                 (question_id, stage, member_id, message))
 
+    # Cost-cap amendments: raising the cap after a pause is recorded here, never in the frozen config
+    def cap_amendments(self) -> list[dict]:
+        row = self.connection.execute("SELECT value FROM meta WHERE key='cap_amendments'").fetchone()
+        return json.loads(row[0]) if row else []
+
+    def effective_cap(self, frozen_cap: float) -> float:
+        amendments = self.cap_amendments()
+        return float(amendments[-1]["new_cap_usd"]) if amendments else float(frozen_cap)
+
+    def raise_cap(self, frozen_cap: float, new_cap: float, reason: str, when: str) -> None:
+        current = self.effective_cap(frozen_cap)
+        if new_cap <= current:
+            raise RuntimeError(f"The new cap must be above the current one (${current:.2f})")
+        if not reason.strip():
+            raise RuntimeError("Give a reason for raising the cap; it goes in the report")
+        amendments = self.cap_amendments() + [{
+            "date": when, "previous_cap_usd": current, "new_cap_usd": new_cap,
+            "spend_at_amendment_usd": round(self.cost(), 4), "reason": reason.strip()}]
+        with self.connection:
+            self.connection.execute("INSERT OR REPLACE INTO meta VALUES ('cap_amendments',?)",
+                                    (json.dumps(amendments),))
+
     # Totals
     def cost(self) -> float:
         return float(self.connection.execute("SELECT COALESCE(SUM(cost),0) FROM calls").fetchone()[0])

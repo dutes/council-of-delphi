@@ -133,6 +133,11 @@ async def run_delphi(question: Question, config: StudyConfig, store: FollowupSto
     return final
 
 
+def finished(store: FollowupStore, question_id: str) -> bool:
+    return all(store.decision(question_id, stage, Arbitration) is not None
+               for stage in FINAL_STAGES.values())
+
+
 async def run_question(source: Question, configs: dict[str, StudyConfig], store: FollowupStore,
                        max_attempts: int) -> bool:
     """Run every condition for one question. Returns True when all four finals exist."""
@@ -158,5 +163,4 @@ async def run_question(source: Question, configs: dict[str, StudyConfig], store:
         await run_delphi(question, configs["matched"], store, "seat", councils["matched"],
                          [seat_position(direct)], max_attempts)
 
-    return all(store.decision(question.id, stage, Arbitration) is not None
-               for stage in FINAL_STAGES.values())
+    return finished(store, question.id)

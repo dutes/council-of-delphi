@@ -4,7 +4,7 @@ Author: Brian Doutey, independent researcher (no institutional affiliation)
 
 Status: **DRAFT, not frozen.** Nothing in this document has been run. It becomes
 binding when the freeze section at the end is completed and the file is hashed.
-Until then, every item marked *[to fix at freeze]* can still change.
+Until then, anything in it can still change.
 
 ## Why this study exists
 
@@ -34,18 +34,24 @@ anything so the result can't shape the question.
 
 ## What would change my mind
 
-I'm stating this before the run:
+I'm stating this before the run. The primary estimand is JEV alone minus
+Delphi with the strong council, so a positive number means JEV alone did
+better.
 
-- If the matched-council Delphi process **beats JEV alone** (95% interval
-  entirely above zero), I was wrong to generalise from the first study. The
-  first result was about weak councils, and councils can help a judge when
-  they're strong enough.
+- If the interval is **entirely below zero**, Delphi with the strong council
+  beat JEV alone. I was wrong to generalise from the first study: its result
+  was about a weak council, and a strong enough council helps a judge.
 - If the interval **includes zero**, the first result doesn't carry over to a
   strong council, and I'll say the question is open.
-- If JEV alone **still wins** (interval entirely below zero), adding a council
-  costs a capable judge accuracy even when the council is its equal, in this
-  setup. That's the strongest form of the finding, and the one I'd want most
-  carefully replicated before anyone relies on it.
+- If the interval is **entirely above zero**, JEV alone still wins, so adding
+  a council costs this judge accuracy even when the council is much stronger,
+  in this setup. As the calibration outcome below explains, "much stronger"
+  doesn't mean "equal", and I'll say so.
+
+The strength comparison (Delphi with the strong council minus Delphi with the
+small one) is read alongside it. If it's clearly positive while JEV alone
+still wins, a stronger council helps the process but not enough to beat the
+judge on its own.
 
 ## Conditions
 
@@ -150,6 +156,37 @@ This is the first protocol's own definition ("no enabled hidden reasoning
 mode"). The first study went further and also excluded models that could
 reason, based on their listing; the follow-up doesn't.
 
+### Calibration outcome (19 November 2026, before the freeze)
+
+With reasoning switched off, no candidate came within 3 points of JEV. JEV
+alone scored 86.7% on the 60 calibration questions, so the rule picked the
+closest candidate from each provider:
+
+| Provider | Chosen model | Calibration accuracy | Gap to JEV |
+|---|---|---|---|
+| Anthropic | `claude-sonnet-5-5` | 83.3% | 3.3 points below |
+| OpenAI | `gpt-5.5-2026-04-23` | 75.0% | 11.7 points below |
+| Mistral | `mistral-medium-3-5` | 63.3% | 23.3 points below |
+
+On the same questions, the small council's models averaged about 56% and the
+chosen council about 74%. So this is a much stronger council than the first
+study's, but not JEV's equal, and the report has to say that plainly. The
+Anthropic seat is close; the Mistral seat is far off.
+
+Two more things learned at this step:
+
+- **60 questions can't resolve a 3-point gap.** Each question is worth 1.7
+  points, and an accuracy on 60 questions is uncertain by roughly 5 points
+  either way. The window was finer than the calibration set can measure.
+- **The gap is itself informative.** JEV, sold as a fast "System One" model,
+  beats every council model with reasoning switched off, including GPT-5.5 by
+  12 points. Whether JEV reasons internally isn't public. I've asked TypeSafe,
+  and the answer changes how the result should be read.
+
+One candidate was dropped during calibration: `claude-sonnet-4-6` repeatedly
+broke the answer format (writing its confidence as 99 instead of 0.99) and
+missed 4 of 60 questions on both attempts, above the 5% limit.
+
 ## Outcomes and estimands
 
 **Primary estimand** (paired, question-level accuracy difference):
@@ -164,6 +201,7 @@ JEV alone  -  F-matched Delphi final
 JEV alone  -  F-small Delphi final              (replication of the post-hoc result)
 G final    -  JEV alone                         (does a seat at the table help?)
 F-matched Delphi final  -  C-matched majority   (does Delphi still beat voting?)
+F-matched Delphi final  -  F-small Delphi final (does council strength help?)
 ```
 
 Also reported:
@@ -211,10 +249,18 @@ Carried over from the first study unchanged:
 - More than 2% incomplete questions in the primary comparison makes the
   primary analysis non-evaluable.
 - Output ceiling of 2,048 tokens for every model.
-- A recorded-cost cap pauses the run rather than changing the protocol
-  *[to fix at freeze: cap, set from the calibration run's cost per question]*.
-  For reference, the first study's 494 scored questions cost $5.65 in total,
-  almost all of it council calls. Larger council models will cost more.
+- A recorded-cost cap of **$30** pauses the run between questions rather than
+  changing the protocol. Calibration estimated the run at $28.54, so the cap
+  may be reached near the end; the last question started before the pause can
+  overshoot it by a few cents.
+- **Resuming.** Re-running picks up only what's unfinished: finished questions
+  are skipped, and an unfinished one continues from the step it stopped on.
+  Successful calls are never repeated.
+- **Raising the cap** is an operational amendment, never a change to the frozen
+  config. It's recorded in the results database with the date, the old and new
+  cap, the spend at that point and the reason, and the analysis report prints
+  every such amendment. Nothing else (models, prompts, questions, analysis)
+  can change.
 - Any amendment after freeze is written into this file with its date and
   reason, and disclosed in the report.
 
