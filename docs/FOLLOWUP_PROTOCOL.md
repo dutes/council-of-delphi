@@ -128,7 +128,11 @@ every call:
 
 - **OpenAI** GPT-5 family: `reasoning_effort` set to `none`.
 - **Mistral** Medium and Small: `reasoning_effort` set to `none`.
-- **Anthropic:** extended thinking is never requested, as in the first study.
+- **Anthropic:** thinking is never requested, as in the first study. Claude
+  Sonnet 5.5 thinks by default and won't accept "disabled", so it's sent
+  `thinking: {"type": "between_tools"}`, which turns its up-front thinking off;
+  with no tools, its reply is text only. Claude Opus 5.5 can't have thinking
+  switched off at all, so it isn't a candidate.
 
 Every response is checked as before. Reasoning tokens, a thinking block or a
 reasoning field fails the call. A candidate that reasons anyway fails the
@@ -136,8 +140,8 @@ preflight check and is dropped before calibration. Models with no reasoning
 mode, including the whole original small council, are called exactly as in the
 first study.
 
-Two of the Anthropic candidates, `claude-sonnet-5-5` and `claude-opus-5-5`,
-no longer accept a temperature setting at all. If either is chosen, it's
+One Anthropic candidate, `claude-sonnet-5-5`, no longer accepts a
+temperature setting at all. If it's chosen, it's
 sampled at Anthropic's fixed default instead of the protocol's 0.7, and the
 freeze record says so. Every other model, including the whole small council,
 uses 0.7 as before.

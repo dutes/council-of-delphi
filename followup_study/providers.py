@@ -7,7 +7,8 @@ with reasoning switched off on every call (docs/FOLLOWUP_PROTOCOL.md,
 
 - OpenAI GPT-5 family: ``reasoning_effort: "none"``
 - Mistral Medium and Small: ``reasoning_effort: "none"``
-- Anthropic: extended thinking is never requested, as in the first study
+- Anthropic: thinking is never requested; Claude Sonnet 5.5, which thinks by
+  default, gets ``thinking: {"type": "between_tools"}``
 
 Every response is still checked: reasoning tokens, a thinking block or a
 reasoning field fails the call, exactly as before. Models that can't reason
@@ -30,7 +31,7 @@ from arbiter_study.providers import ProviderError, normalise, output_schema, pos
 # Models whose API no longer accepts a temperature ("temperature is deprecated for this
 # model"). They're sampled at the provider's fixed default instead of the protocol's 0.7,
 # which the freeze record discloses. Every other model gets the protocol temperature.
-FIXED_TEMPERATURE = frozenset({"claude-sonnet-5-5", "claude-opus-5-5"})
+FIXED_TEMPERATURE = frozenset({"claude-sonnet-5-5", "claude-opus-5-5"})  # Opus 5.5 kept for completeness
 
 
 def temperature(config: StudyConfig, model: str) -> dict[str, Any]:
@@ -38,11 +39,19 @@ def temperature(config: StudyConfig, model: str) -> dict[str, Any]:
 
 
 def reasoning_off(provider: str, model: str) -> dict[str, Any]:
-    """The request fields that switch reasoning off for models that have it."""
+    """The request fields that switch reasoning off for models that have it.
+
+    Claude Sonnet 5.5 thinks by default and rejects "disabled"; "between_tools" is its
+    off switch for up-front thinking, and with no tools the reply is text only. Claude
+    Opus 5.5 can't switch thinking off at all, so it isn't a candidate. Older Claude
+    models (Opus 4.8, Sonnet 4.6 and earlier) don't think unless asked.
+    """
     if provider == "openai" and model.startswith("gpt-5"):
         return {"reasoning_effort": "none"}
     if provider == "mistral" and model.startswith(("mistral-medium", "mistral-small")):
         return {"reasoning_effort": "none"}
+    if provider == "anthropic" and model == "claude-sonnet-5-5":
+        return {"thinking": {"type": "between_tools"}}
     return {}
 
 
@@ -86,6 +95,7 @@ async def ask_anthropic(question: Question, config: StudyConfig, *, member_id: s
             "max_tokens": config.max_output_tokens, "system": system,
             "messages": [{"role": "user", "content": user}],
             "output_config": {"format": {"type": "json_schema", "schema": output_schema(question)}},
+            **reasoning_off("anthropic", model),
         },
     )
     blocks = raw.get("content", [])

@@ -216,7 +216,9 @@ def test_reasoning_is_switched_off_only_where_a_model_has_it():
     assert reasoning_off("openai", "gpt-4.1-mini-2025-04-14") == {}   # the small council is unchanged
     assert reasoning_off("mistral", "mistral-medium-3-5") == {"reasoning_effort": "none"}
     assert reasoning_off("mistral", "ministral-14b-2512") == {}
-    assert reasoning_off("anthropic", "claude-opus-5-5") == {}
+    assert reasoning_off("anthropic", "claude-sonnet-5-5") == {"thinking": {"type": "between_tools"}}
+    assert reasoning_off("anthropic", "claude-opus-4-8") == {}
+    assert reasoning_off("anthropic", "claude-haiku-4-5-20251001") == {}
 
 
 async def test_a_mistral_reply_with_thinking_is_rejected(monkeypatch):

@@ -140,12 +140,20 @@ async def main() -> int:
     dataset_sha = sha256_file(path)
     questions = load_questions(path, expected_count=60)
     models = candidate_list(spec)
-    plan = hashlib.sha256(json.dumps([dataset_sha, [m[:2] for m in models]]).encode()).hexdigest()
+    # The plan covers the questions, the models and how they're called, so a calibration
+    # database can never mix answers from different request settings.
+    plan = hashlib.sha256(json.dumps([dataset_sha, [m[:2] for m in models],
+                                      sha256_file("followup_study/providers.py")]).encode()).hexdigest()
     attempts = spec["max_attempts_per_stage"]
     jev_config = single_model_config(spec, "openai", spec["arms"]["small"]["openai"])
 
     Path(args.db).parent.mkdir(parents=True, exist_ok=True)
-    with FollowupStore(args.db, "calibration:" + plan, questions) as store:
+    try:
+        store_cm = FollowupStore(args.db, "calibration:" + plan, questions)
+    except RuntimeError as error:
+        raise RuntimeError(f"{args.db} was made with different models or settings. Delete it "
+                           "and run calibration again from the start.") from error
+    with store_cm as store:
         for index, source in enumerate(questions, start=1):
             print(f"[{index:02d}/60] {source.id}")
             question = source.model_copy(update={"correct_label": "A"})
