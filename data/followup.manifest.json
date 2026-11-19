@@ -1,0 +1,30 @@
+{
+  "version": "delphi-followup-v1",
+  "seed": 20261118,
+  "main": {
+    "path": "data/followup_500.jsonl",
+    "question_count": 500,
+    "sha256": "11680774586fae64f1899f5e818763fedd52d7ad8935e4a0120cf7c85a2bf409",
+    "source_counts": {
+      "mmlu_pro": 400,
+      "arc_challenge": 100
+    }
+  },
+  "calibration": {
+    "path": "data/followup_calibration_60.jsonl",
+    "question_count": 60,
+    "sha256": "a6db6f9d61398a4a0020798986f4ccb1d2677b81d5a598045f759ddec3d7ab49",
+    "source_counts": {
+      "mmlu_pro": 48,
+      "arc_challenge": 12
+    }
+  },
+  "source_revisions": {
+    "mmlu_pro": "b189ec765aa7ed75c8acfea42df31fdae71f97be",
+    "arc_challenge": "210d026faf9955653af8916fad021475a3f00453"
+  },
+  "excluded": {
+    "source_rows": 3100,
+    "question_texts": 3140
+  }
+}

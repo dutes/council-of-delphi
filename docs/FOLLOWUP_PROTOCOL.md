@@ -2,9 +2,8 @@
 
 Author: Brian Doutey, independent researcher (no institutional affiliation)
 
-Status: **DRAFT, not frozen.** Nothing in this document has been run. It becomes
-binding when the freeze section at the end is completed and the file is hashed.
-Until then, anything in it can still change.
+Status: **Frozen on 2026-11-19**, before any scored call. Changes after this date are
+amendments, recorded in this file with their date and reason.
 
 ## Why this study exists
 
@@ -280,13 +279,16 @@ model provider.
 
 ## Freeze record
 
-*[to complete at freeze]*
-
-- Date:
+- Date: 2026-11-19
 - Council candidate list:
-- Calibration results and chosen matched council:
-- Cost cap:
-- Seeds (crowd, arbitration, tie, analysis):
-- Dataset SHA-256 (main sample and calibration set):
-- Implementation SHA-256:
-- This file's SHA-256:
+  - openai: `gpt-4.1-2025-04-14`, `gpt-5.1-2025-11-13`, `gpt-5.4-2026-03-05`, `gpt-5.5-2026-04-23`
+  - anthropic: `claude-sonnet-5-5`, `claude-opus-4-8`
+  - mistral: `ministral-14b-2512`, `mistral-small-2603`, `mistral-medium-3-5`
+- Calibration: JEV alone scored 86.7% on the 60 calibration questions. Chosen matched council:
+  - openai: `gpt-5.5-2026-04-23` (reasoning_effort none), 75.0% on calibration (11.7 points below JEV alone), no candidate within the window; closest to JEV alone
+  - anthropic: `claude-sonnet-5-5` (reasoning_effort none) (provider's default temperature; it rejects 0.7), 83.3% on calibration (3.3 points below JEV alone), no candidate within the window; closest to JEV alone
+  - mistral: `mistral-medium-3-5` (reasoning_effort none), 63.3% on calibration (23.3 points below JEV alone), no candidate within the window; closest to JEV alone
+- Cost cap: $30.00
+- Seeds: crowd 20261123, arbitration 20261124, tie 20261125, analysis 20261126
+- Dataset SHA-256: main `11680774586fae64f1899f5e818763fedd52d7ad8935e4a0120cf7c85a2bf409`, calibration `a6db6f9d61398a4a0020798986f4ccb1d2677b81d5a598045f759ddec3d7ab49`
+- Implementation SHA-256 (covers this file): recorded in `config/followup_v1.json`

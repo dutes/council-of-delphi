@@ -1,0 +1,123 @@
+{
+  "calibration_sha256": "a6db6f9d61398a4a0020798986f4ccb1d2677b81d5a598045f759ddec3d7ab49",
+  "jev_alone_accuracy": 0.8666666666666667,
+  "jev_cost_per_call": 3.40508e-05,
+  "match_tolerance_pp": 3,
+  "models": {
+    "openai|gpt-4.1-2025-04-14": {
+      "provider": "openai",
+      "model": "gpt-4.1-2025-04-14",
+      "candidate": true,
+      "answered": 60,
+      "accuracy": 0.65,
+      "cost_per_question": 0.0017216666666666667
+    },
+    "openai|gpt-5.1-2025-11-13": {
+      "provider": "openai",
+      "model": "gpt-5.1-2025-11-13",
+      "candidate": true,
+      "answered": 60,
+      "accuracy": 0.65,
+      "cost_per_question": 0.0024844583333333333
+    },
+    "openai|gpt-5.4-2026-03-05": {
+      "provider": "openai",
+      "model": "gpt-5.4-2026-03-05",
+      "candidate": true,
+      "answered": 60,
+      "accuracy": 0.7333333333333333,
+      "cost_per_question": 0.002988
+    },
+    "openai|gpt-5.5-2026-04-23": {
+      "provider": "openai",
+      "model": "gpt-5.5-2026-04-23",
+      "candidate": true,
+      "answered": 60,
+      "accuracy": 0.75,
+      "cost_per_question": 0.00541
+    },
+    "openai|gpt-4.1-mini-2025-04-14": {
+      "provider": "openai",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "candidate": false,
+      "answered": 60,
+      "accuracy": 0.5333333333333333,
+      "cost_per_question": 0.0003674266666666667
+    },
+    "anthropic|claude-sonnet-5-5": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5",
+      "candidate": true,
+      "answered": 60,
+      "accuracy": 0.8333333333333334,
+      "cost_per_question": 0.0038198333333333335
+    },
+    "anthropic|claude-opus-4-8": {
+      "provider": "anthropic",
+      "model": "claude-opus-4-8",
+      "candidate": true,
+      "answered": 60,
+      "accuracy": 0.8,
+      "cost_per_question": 0.008029583333333333
+    },
+    "anthropic|claude-haiku-4-5-20251001": {
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "candidate": false,
+      "answered": 60,
+      "accuracy": 0.6333333333333333,
+      "cost_per_question": 0.0020435166666666667
+    },
+    "mistral|ministral-14b-2512": {
+      "provider": "mistral",
+      "model": "ministral-14b-2512",
+      "candidate": true,
+      "answered": 60,
+      "accuracy": 0.5,
+      "cost_per_question": 8.806000000000001e-05
+    },
+    "mistral|mistral-small-2603": {
+      "provider": "mistral",
+      "model": "mistral-small-2603",
+      "candidate": true,
+      "answered": 60,
+      "accuracy": 0.6,
+      "cost_per_question": 0.0001412275
+    },
+    "mistral|mistral-medium-3-5": {
+      "provider": "mistral",
+      "model": "mistral-medium-3-5",
+      "candidate": true,
+      "answered": 60,
+      "accuracy": 0.6333333333333333,
+      "cost_per_question": 0.00177665
+    }
+  },
+  "chosen": {
+    "openai": {
+      "model": "gpt-5.5-2026-04-23",
+      "accuracy": 0.75,
+      "gap_to_jev_pp": 11.67,
+      "rule": "no candidate within the window; closest to JEV alone"
+    },
+    "anthropic": {
+      "model": "claude-sonnet-5-5",
+      "accuracy": 0.8333333333333334,
+      "gap_to_jev_pp": 3.33,
+      "rule": "no candidate within the window; closest to JEV alone"
+    },
+    "mistral": {
+      "model": "mistral-medium-3-5",
+      "accuracy": 0.6333333333333333,
+      "gap_to_jev_pp": 23.33,
+      "rule": "no candidate within the window; closest to JEV alone"
+    }
+  },
+  "main_run_cost_estimate": {
+    "per_question_usd": 0.05707,
+    "total_usd": 28.54,
+    "suggested_cap_usd": 44.0,
+    "assumptions": "reconsideration on 45% of questions (first study), reconsideration prompts 1.5x the cost of a first answer"
+  },
+  "calibration_spend_usd": 2.081
+}
