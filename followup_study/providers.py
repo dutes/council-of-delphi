@@ -31,7 +31,7 @@ from arbiter_study.providers import ProviderError, normalise, output_schema, pos
 # Models whose API no longer accepts a temperature ("temperature is deprecated for this
 # model"). They're sampled at the provider's fixed default instead of the protocol's 0.7,
 # which the freeze record discloses. Every other model gets the protocol temperature.
-FIXED_TEMPERATURE = frozenset({"claude-sonnet-5-5", "claude-opus-5-5"})  # Opus 5.5 kept for completeness
+FIXED_TEMPERATURE = frozenset({"claude-sonnet-5-5", "claude-opus-5-5", "claude-opus-4-8"})
 
 
 def temperature(config: StudyConfig, model: str) -> dict[str, Any]:

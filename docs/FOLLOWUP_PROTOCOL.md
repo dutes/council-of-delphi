@@ -140,8 +140,8 @@ preflight check and is dropped before calibration. Models with no reasoning
 mode, including the whole original small council, are called exactly as in the
 first study.
 
-One Anthropic candidate, `claude-sonnet-5-5`, no longer accepts a
-temperature setting at all. If it's chosen, it's
+Two Anthropic candidates, `claude-sonnet-5-5` and `claude-opus-4-8`, no
+longer accept a temperature setting at all. If either is chosen, it's
 sampled at Anthropic's fixed default instead of the protocol's 0.7, and the
 freeze record says so. Every other model, including the whole small council,
 uses 0.7 as before.
