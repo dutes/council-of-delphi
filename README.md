@@ -6,6 +6,8 @@ It depends on the council, and finding that out changed my mind.
 
 I built this to test an idea that sounds obviously right: if one model can be wrong, ask several, let them see each other's reasoning, and have a judge decide when they should think again. It's the Delphi method, applied to LLMs. I ran it twice. Both studies were pre-registered, with the data and code frozen before any scored run, and I've reported every result, including the ones that went against me.
 
+This page is the overview. The full technical report, with related work, methods, statistics and my account of why the result flips, is [`PAPER.md`](PAPER.md).
+
 ## The short version
 
 **Study 1: a council of three small models** (494 questions from MMLU-Pro and ARC-Challenge).
