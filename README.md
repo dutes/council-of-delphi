@@ -182,7 +182,7 @@ Health and law categories were excluded.
 
 ## Licence
 
-The code and documents are MIT licensed. The benchmark questions keep their original licences; see [`LICENSE`](LICENSE).
+The code and documents are MIT licensed; see [`LICENSE`](LICENSE). The benchmark questions keep their original licences; see [`data/README.md`](data/README.md).
 
 ## Independence
 
