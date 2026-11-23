@@ -57,7 +57,7 @@ Each study used 500 four-to-ten-option multiple-choice questions: 400 from MMLU-
 |---|---|---|
 | Small council | `gpt-4.1-mini-2025-04-14`, `claude-haiku-4-5-20251001`, `ministral-14b-2512` | Same (replication arm) |
 | Strong council | — | `gpt-5.5-2026-04-23`, `claude-sonnet-5-5`, `mistral-medium-3-5` |
-| Judge | JEV (`jev-latest`, TypeSafe AI) | Same |
+| Judge | JEV (`jev-latest`), TypeSafe AI's own "System One" judgement model | Same |
 
 **Reasoning control.** Council models answer without hidden reasoning. In Study 1, only models with no reasoning mode were eligible. Study 2 admitted models that can reason, with reasoning switched off on every call:
 - OpenAI GPT-5.5 and Mistral Medium 3.5 ran with `reasoning_effort: "none"`.
@@ -84,7 +84,7 @@ The judge never sees model identities, costs, the baseline's choice or the groun
 
 ### 3.4 Strength matching in Study 2
 
-I don't know which model powers JEV, so I matched on measured accuracy. On 60 calibration questions, disjoint from everything else, I measured the judge alone and the candidate models fixed in the config before calibration: four from OpenAI, three from Mistral and the Anthropic models that passed preflight. The frozen rule picks, per provider, the cheapest candidate within ±3 points of the judge. If none qualifies, it picks the closest and records the gap.
+TypeSafe doesn't publish JEV's architecture or size, so I matched on measured accuracy. On 60 calibration questions, disjoint from everything else, I measured the judge alone and the candidate models fixed in the config before calibration: four from OpenAI, three from Mistral and the Anthropic models that passed preflight. The frozen rule picks, per provider, the cheapest candidate within ±3 points of the judge. If none qualifies, it picks the closest and records the gap.
 
 With reasoning off, no candidate came within 3 points. The judge scored 86.7% on calibration. The rule chose Claude Sonnet 5.5 (83.3%, −3.3 points), GPT-5.5 (75.0%, −11.7 points) and Mistral Medium 3.5 (63.3%, −23.3 points). I therefore describe this as a *strong* council, not a *matched* one. The protocol was amended before freezing to say so, and to add the strength comparison (F-strong minus F-small) as a secondary estimand. One candidate, `claude-sonnet-4-6`, was dropped for repeatedly breaking the output format: it wrote confidence as 99 instead of 0.99 and failed 4 of 60 questions on both attempts.
 
@@ -256,7 +256,7 @@ In both studies, judge-controlled Delphi beat the same council's majority vote b
 ## 8. Limitations and threats to validity
 
 - **Scope.** The study used one judge, two council slates, one prompt template, one Delphi round and multiple-choice questions only. The results show that council strength matters in this setup. They don't show that councils always or never help, and they don't speak to open-ended generation.
-- **Opaque judge.** TypeSafe does not publish which model powers JEV. JEV beat every council model with reasoning off, GPT-5.5 included. If JEV reasons internally, both studies partly measure a reasoning judge against a non-reasoning council. I've asked the vendor and will update this report if they answer.
+- **Partly opaque judge.** JEV is TypeSafe's own model. Its documentation describes it as a "System One" model for fast, structured decisions, suited to judgements "a highly knowledgeable person could make in a few seconds", and recommends decomposing questions that need extended reasoning (TypeSafe AI, 2026). That positions it as a fast-judgement model rather than a reasoning one. However, its architecture is unpublished, so I can't rule out internal processing of a kind the council models had switched off. JEV beat every council model with reasoning off, GPT-5.5 included.
 - **Not strength-matched.** No candidate came within 3 points of the judge on calibration, so the strong council is stronger, not equal. The 60-question calibration set also can't resolve a 3-point window: each question is worth 1.7 points, and the standard error is about 5 points. GPT-5.5 scored 75.0% on calibration and 82.6% on the main sample.
 - **Heterogeneous "reasoning off".** Providers implement it differently. Sonnet 5.5 ran with `between_tools` rather than a true disable, and at Anthropic's default temperature rather than 0.7. Every response was verified free of reasoning output.
 - **A recording error.** Study 2's freeze record labels Sonnet 5.5's setting as `reasoning_effort none`. The request the code sent was `thinking: {"type": "between_tools"}`, as the protocol text and `followup_study/providers.py` show. The label was produced by the freeze script, and no behaviour depended on it.
@@ -297,6 +297,7 @@ A judge-arbitrated LLM council is not a free improvement. With a weak council it
 - Sharma, M., Tong, M., Korbak, T., et al. (2024). Towards understanding sycophancy in language models. *ICLR 2024*. arXiv:2310.13548.
 - Smit, A. P., Grinsztajn, N., Duckworth, P., Barrett, T. D., & Pretorius, A. (2024). Should we be going MAD? A look at multi-agent debate strategies for LLMs. *ICML 2024*. arXiv:2311.17371.
 - Surowiecki, J. (2004). *The Wisdom of Crowds*. Doubleday.
+- TypeSafe AI (2026). Introduction. TypeSafe documentation. https://docs.typesafe.ai/introduction (accessed 23 November 2026).
 - Wang, J., Wang, J., Athiwaratkun, B., Zhang, C., & Zou, J. (2024). Mixture-of-Agents enhances large language model capabilities. arXiv:2406.04692.
 - Wang, X., Wei, J., Schuurmans, D., Le, Q., Chi, E., Narang, S., Chowdhery, A., & Zhou, D. (2023). Self-consistency improves chain of thought reasoning in language models. *ICLR 2023*. arXiv:2203.11171.
 - Wang, Y., Ma, X., Zhang, G., et al. (2024b). MMLU-Pro: A more robust and challenging multi-task language understanding benchmark. *NeurIPS 2024 Datasets and Benchmarks*. arXiv:2406.01574.

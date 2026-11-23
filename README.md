@@ -50,7 +50,7 @@ question
 
 **The council:** OpenAI `gpt-4.1-mini-2025-04-14`, Anthropic `claude-haiku-4-5-20251001` and Mistral `ministral-14b-2512`. All three run with hidden reasoning disabled, at temperature 0.7, with identical prompts and output limits.
 
-**The judge:** JEV, a commercial structured-judgement API from TypeSafe AI. It sees the question, the anonymised candidate answers, vote counts and short rationales. It never sees model identities or the ground truth.
+**The judge:** JEV, TypeSafe AI's own structured-judgement model. Its [documentation](https://docs.typesafe.ai/introduction) describes it as a fast "System One" model for quick, structured decisions. It sees the question, the anonymised candidate answers, vote counts and short rationales. It never sees model identities or the ground truth.
 
 **The control that matters:** JEV also answers every question on its own, with no council input. Without that, you can't tell whether a judge is good at *arbitrating* or just good at *answering*.
 
@@ -91,7 +91,7 @@ Study 1 left an obvious objection: of course a strong judge gets worse when it h
 - Delphi with a strong council
 - Delphi with the strong council, plus JEV's own answer added as one more anonymous candidate
 
-**Choosing the strong council.** I don't know which model powers JEV, so I matched on measured accuracy instead. On 60 separate calibration questions, I measured JEV and nine candidate models, and picked from each provider the cheapest model within 3 points of JEV. Reasoning stayed switched off, as in study 1. With reasoning on, the strongest models leave a judge little to add. With it off, no model came within 3 points, so the rule fell back to the closest model from each provider. The strong council was a big step up, but it wasn't JEV's equal, and the protocol says so.
+**Choosing the strong council.** TypeSafe doesn't publish JEV's architecture or size, so I matched on measured accuracy instead. On 60 separate calibration questions, I measured JEV and nine candidate models, and picked from each provider the cheapest model within 3 points of JEV. Reasoning stayed switched off, as in study 1. With reasoning on, the strongest models leave a judge little to add. With it off, no model came within 3 points, so the rule fell back to the closest model from each provider. The strong council was a big step up, but it wasn't JEV's equal, and the protocol says so.
 
 **Results**
 
@@ -132,7 +132,7 @@ The protocols for these are in `docs/` (`EVIDENCE_PROTOCOL.md`, `ACTIVE_DELPHI_*
 I'd rather state these plainly than have a reader find them:
 
 - **One judge, two model slates, one prompt, one question mix.** The results apply to this setup. They show that council strength matters here; they don't show that councils always or never help.
-- **I don't know what JEV runs on.** TypeSafe doesn't publish it, and I've asked. JEV beat every council model with reasoning switched off, GPT-5.5 included. If JEV reasons internally, part of what both studies measured is a judge that reasons against a council that doesn't.
+- **What's inside JEV isn't public.** JEV is TypeSafe's own model. Its [documentation](https://docs.typesafe.ai/introduction) describes it as a fast "System One" model for judgements "a highly knowledgeable person could make in a few seconds", and advises splitting anything that needs extended reasoning into simpler questions. However, TypeSafe doesn't publish its architecture, so I can't rule out internal processing that the council models had switched off. JEV beat every council model with reasoning off, GPT-5.5 included.
 - **The strong council wasn't matched to the judge.** No candidate came within 3 points of JEV on calibration, so the closest from each provider was chosen. The calibration step also used only 60 questions, which can't resolve a 3-point gap (each question is worth 1.7 points). GPT-5.5 scored 75% on calibration and 83% across the full 500.
 - **"Reasoning off" means different settings for different providers.** GPT-5.5 and Mistral Medium 3.5 ran with `reasoning_effort: "none"`. Claude Sonnet 5.5 can't fully disable thinking, so it ran with `thinking: "between_tools"`, which turns off up-front thinking. Every response was checked, and none of the 12,650 successful calls in the follow-up contained reasoning. Sonnet 5.5 also rejects a temperature setting, so it ran at Anthropic's default instead of 0.7. One error to own: the follow-up's frozen freeze record labels Sonnet 5.5's setting as `reasoning_effort none`. The request the code actually sent is `thinking: "between_tools"`, as the protocol's text and `followup_study/providers.py` show.
 - **Public benchmarks.** MMLU-Pro and ARC questions may appear in the models' training data.
