@@ -246,11 +246,27 @@ Repeated sampling from non-reasoning models moved accuracy by about one point at
 
 In both studies, judge-controlled Delphi beat the same council's majority vote by large margins: +13.2 points with the small council and +7.0 with the strong one. Arbitration is valuable relative to voting. The question this report raises is whether it's valuable relative to the arbiter.
 
-### 7.5 Implications
+### 7.5 Cost
+
+Accuracy gains came at a steep price. Recorded API spend per condition in Study 2:
+
+| Condition | Accuracy | Errors per 100 | Recorded cost (500 questions) |
+|---|---|---|---|
+| D. Judge alone | 86.2% | 13.8 | $0.017 |
+| F-small. Delphi, small council | 82.0% | 18.0 | $5.27 |
+| F-strong. Delphi, strong council | 89.8% | 10.2 | $20.57 |
+| G. F-strong plus judge as candidate | 91.0% | 9.0 | +$4.33 incremental |
+
+Condition G reused F-strong's initial council answers, so its incremental cost covers only its own assessment, reconsideration and selection calls. A standalone G would cost at most about $25.
+
+Relative to the judge alone, F-strong cut errors by 26% and G by 35%, at roughly 1,200 and up to about 1,460 times the cost respectively. The small council cost about 300 times as much as the judge alone and made it less accurate. Prices reflect provider rates during the November 2026 run, and the ratio is dominated by the strong council's three-sample crowds and reconsideration round. The decision is therefore an economic one as much as a methodological one: a council is worth running only where the cost of an error exceeds the extra compute.
+
+### 7.6 Implications
 
 - Evaluate a multi-agent pipeline against its strongest single component, not only against a vote or a weak single model.
 - Treat adding a reviewer or council member as a quality decision. A weak member can lower system accuracy even under a strong judge.
 - Let the arbiter contribute its own answer, anonymously, alongside the council's.
+- Price the gain. In this study, a third fewer errors cost over a thousand times as much as the judge alone.
 - Pass raw evidence rather than summaries between agents, or let the judge request evidence it needs.
 
 ## 8. Limitations and threats to validity

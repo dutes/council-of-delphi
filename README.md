@@ -21,7 +21,7 @@ This page is the overview. The full technical report, with related work, methods
 - With a **strong council** (GPT-5.5, Claude Sonnet 5.5 and Mistral Medium 3.5, all with reasoning switched off), the Delphi process **beat the judge alone by 3.6 points**: 89.8% against 86.2% (95% CI 1.0 to 6.2). That's the outcome I'd committed in writing to treat as proof I was wrong to generalise.
 - Letting the judge's own answer sit anonymously among the candidates did best of all: **91.0%**, **4.8 points** above the judge alone.
 
-So a weak council drags a good judge down, a strong one lifts it, and a judge that can weigh its own answer alongside a strong council does better than either alone.
+So a weak council drags a good judge down, a strong one lifts it, and a judge that can weigh its own answer alongside a strong council does better than either alone. However, the gain has a price: the best setup cut JEV's mistakes by about a third, but cost over a thousand times as much to run as JEV alone.
 
 ## Why I ran it
 
@@ -118,6 +118,14 @@ Study 1 left an obvious objection: of course a strong judge gets worse when it h
 - **The judge still earns its place.** The strong council's own majority vote scored 82.8%. With JEV running the process, it reached 89.8%.
 - **Reconsideration helps more than it hurts.** With the strong council, JEV asked for a second round on 114 questions. That turned 19 wrong answers right and 6 right answers wrong.
 - **Give the judge a vote.** When JEV's own answer was an anonymous candidate, the final answer matched it on 451 of 500 questions. The other 49 are where the council talked it round, and that's where the extra accuracy came from.
+- **The accuracy isn't cheap.** The best setup cut JEV's mistakes by about a third (from 13.8% of questions to 9.0%). However, JEV alone cost $0.02 for all 500 questions, and running the strong council cost $20.57, over a thousand times as much. Whether that trade is worth it depends on what a wrong answer costs you. Measure your best single model first, and add a council only where the gain clearly justifies the compute.
+
+| Condition (follow-up, 500 questions) | Accuracy | Recorded API cost |
+|---|---|---|
+| JEV alone | 86.2% | $0.02 |
+| Delphi, small council | 82.0% | $5.27 |
+| Delphi, strong council | 89.8% | $20.57 |
+| Delphi, strong council plus JEV as a candidate | 91.0% | +$4.33 on top of the strong council's answers |
 
 
 
